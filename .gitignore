@@ -117,5 +117,14 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Specific project files to ignore
 /transaction_simulator/shapefiles/
 /transaction_simulator/shapefiles/*
+/.vagrant/
+/.vagrant/*
+
+# JetBrains things
+
+.idea
+.idea/*
