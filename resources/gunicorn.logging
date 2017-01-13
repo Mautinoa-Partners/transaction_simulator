@@ -1,0 +1,1 @@
+issue, you can add a --log-file=/home/path/you/wanto/to/log/file, if you are following the digital ocean article, I believe you'll need to do it on the ExecStart line

@@ -1,0 +1,11 @@
+<h1> I AM EVERYDAY PEOPLE!!!</h1>
+
+{% if latest_person_list %}
+    <ul>
+    {% for person in latest_person_list %}
+        <li><a href="{% url 'games:person_detail' person.id %}">{{ person.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no Persons, but like Michael Jackson, you are not alone! </p>
+{% endif %}

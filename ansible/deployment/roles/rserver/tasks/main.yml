@@ -1,0 +1,173 @@
+---
+
+# basic system tasks
+
+- name: set locale to {{locale}}
+  action: command /usr/sbin/update-locale LANG={{locale}} LC_ALL={{locale}}
+  become: true
+
+# manual workaround to add CRAN repository this is ugly fix later
+
+- name: manually add CRAN repository to apt
+  shell: echo "deb http://cran.rstudio.com/bin/linux/ubuntu xenial/" | sudo tee -a /etc/apt/sources.list
+  become: true
+
+- name: add CRAN repository key
+  apt_key: keyserver=keyserver.ubuntu.com id=E084DAB9 state=present
+  become: true
+
+- name: get r-server packages
+  apt: name={{item}} state=latest install_recommends=yes update_cache=yes
+  sudo: yes
+  ignore_errors: yes
+  with_items:
+    - build-essential
+    - libgdal-dev
+    - libgl1-mesa-dev 
+    - libglu1-mesa-dev
+    - libproj-dev
+    - netcdf-bin
+    - openbox
+    - r-base
+    - r-base-dev
+    - tk8.6-dev
+    - tmux
+    - unzip
+    - xauth
+    - grass
+
+# a different way to install R packages http://adamj.eu/tech/2014/07/19/installing-and-removing-r-packages-with-ansible/
+
+- name: r - packages <-- core
+  command: >
+    Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', dependencies=TRUE, repos=c('http://cran.rstudio.com/')); print('Added'); } else { print('Already installed'); }"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  sudo: yes
+  ignore_errors: yes
+  with_items:
+    - classInt
+    - DCluster
+    - deldir
+    - geoR
+    - gstat
+    - maptools
+    - ncdf
+    - plyr
+    - RandomFields
+    - raster
+    - RColorBrewer
+    - rgdal
+    - rgeos
+    - RSAGA
+    - sp
+    - spatstat
+    - spdep
+    - spgrass6
+    - splancs
+
+- name: r - packages <-- optional
+  command: >
+    Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', dependencies=TRUE, repos=c('http://cran.rstudio.com/')); print('Added'); } else { print('Already installed'); }"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  sudo: yes
+  ignore_errors: yes
+  with_items:
+    - ade4
+    - adehabitat
+    - adehabitatHR
+    - adehabitatHS
+    - adehabitatLT
+    - adehabitatMA
+    - ads
+    - akima
+    - ash
+    - aspace
+    - automap
+    - CircSpatial
+    - clustTool
+    - CompRandFld
+    - constrainedKriging
+    - cshapes
+    - diseasemapping
+    - DSpat
+    - ecespa
+    - fields
+    - FieldSim
+    - gdistance
+    - Geneland
+    - GEOmap
+    - geomapdata
+    - geonames
+    - geoRglm
+    - geosphere
+    - GeoXp
+    - glmmBUGS
+    - gmaps
+    - gmt
+    - Guerry
+    - hdeco
+    - intamap
+    - mapdata
+    - mapproj
+    - maps
+    - MarkedPointProcess
+    - MBA
+    - ModelMap
+    - ncf
+    - nlme
+    - pastecs
+    - PBSmapping
+    - PBSmodelling
+    - psgp
+    - ramps
+    - RArcInfo
+    - regress
+    - RgoogleMaps
+    - RPyGeo
+    - RSurvey
+    - rworldmap
+    - sgeostat
+    - shapefiles
+    - sparr
+    - spatcounts
+    - spatgraphs
+    - spatial
+    - spatialCovariance
+    - SpatialExtremes
+    - spatialkernel
+    - spatialsegregation
+    - spBayes
+    - spcosa
+    - spgwr
+    - sphet
+    - spsurvey
+    - SQLiteMap
+    - Stem
+    - tgp
+    - trip
+    - tripack
+    - tripEstimation
+    - UScensus2000
+    - vardiag
+    - vegan
+
+- name: r - packages <-- non-spatial 
+  command: >
+    Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', dependencies=TRUE, repos=c('http://cran.rstudio.com/')); print('Added'); } else { print('Already installed'); }"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  sudo: yes
+  with_items:
+    - RPostgreSQL
+    - RSQLite
+    - RODBC
+
+#- name: second round of R packages installation check
+#  command: Rscript --slave --no-save --no-restore-history /vagrant/r-requirements.R
+#  sudo: yes
+
