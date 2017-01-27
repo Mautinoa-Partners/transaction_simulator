@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 # Django management command imports
 
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 
 # Django model imports
 
@@ -94,7 +95,7 @@ def create_donor():
             print "Now trying to create an object for: %s" % (bn)
             d = Donor(
                 name=bn,
-                home_country=get_random_object(Country)
+                home_country=Country.objects.order_by('?').first()
             )
 
             d.save()
@@ -127,7 +128,7 @@ def create_crisis():
         )
         ends = begins + timedelta(days=random.uniform(5, 365))
 
-        country = get_random_object(Country)
+        country = Country.objects.order_by('?').first()
         radius = random.uniform(0.0, 50.0)
 
         for random_point in generate_random_points(country.geom.extent):
@@ -179,8 +180,8 @@ def create_scheme():
 
         payroll_amount = random.uniform(100, 1000)
 
-        crisis = get_random_object(Crisis)
-        donor = get_random_object(Donor)
+        crisis = Crisis.objects.order_by('?').first()
+        donor = Donor.objects.order_by('?').first()
 
         try:
             s = Scheme(
@@ -200,10 +201,11 @@ def create_scheme():
             continue
 
 def create_person():
+
     fake = Factory.create()
 
     name = fake.name()
-    scheme = get_random_object(Scheme)
+    scheme = Scheme.objects.order_by('?').first()
     balance = random.uniform(0.00, 10000.00)
 
     for random_point in generate_random_points(scheme.crisis.zone.extent):
@@ -234,9 +236,9 @@ def create_game():
 
     number_of_turns = random.randint(1, 20)
 
-    crisis = get_random_object(Crisis)
+    crisis = Crisis.objects.order_by('?').first()
 
-    donor = get_random_object(Donor)
+    donor = Donor.objects.order_by('?').first()
 
     description = fake.paragraph(nb_sentences=1, variable_nb_sentences=True)
 
@@ -281,28 +283,33 @@ def create_turn():
             except Exception as ex:
                 print "There was a problem creating a Turn: %s for Game: %s" % (the_turn_id, the_game)
 
-def create_transaction(category=None, turn=None):
-
-    if category is None:
-
-        category = random.choice(Transaction.CATEGORY_CHOICES)[0]
-
-    else:
-
-        category = category
-
-    if turn is None:
-
-        turn = Turn.objects.order_by('?').first()
-
-    amount = decimal.Decimal(random.randrange(10000))/100
-
-    buyer = Person.objects.order_by('?').first()
-
-    seller = Person.objects.exclude(id=buyer.id).order_by('?').first()
-
-
-
+# def create_transaction(category=None, turn=None):
+#
+#     if category is None:
+#
+#         category = random.choice(Transaction.CATEGORY_CHOICES)[0]
+#
+#     else:
+#
+#         category = category
+#
+#     if turn is None:
+#
+#         turn = Turn.objects.order_by('?').first()
+#
+#     amount = decimal.Decimal(random.randrange(10000))/100
+#
+#     buyer = Person.objects.order_by('?').first()
+#
+#     seller = Person.objects.exclude(id=buyer.id).order_by('?').first()
+#
+#     try:
+#
+#         the_transaction = Transaction(
+#
+#             category=category,
+#
+#         )
 
 def generate_random_points(bounding_box):
     yield Point(

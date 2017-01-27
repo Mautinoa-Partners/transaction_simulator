@@ -11,6 +11,9 @@ Models are defined not in order of conceptual priority, but in order of necessit
 ensure that Foreign Key relations are safe.
 """
 
+# These are some variables that will be used by all the models so I am defining them here.
+
+
 class Crisis(models.Model):
 
     name = models.CharField(
@@ -143,6 +146,11 @@ class Person(models.Model):
         symmetrical=False,
         related_name='transactions_for'
     )
+
+    age =models.IntegerField(
+        choices=[(i, i) for i in range(1, 100)],
+        blank=True,
+        null=True)
 
     # GeoDjango Models
 

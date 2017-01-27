@@ -39,6 +39,7 @@
   command: psql -c "CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology; CREATE EXTENSION fuzzystrmatch;  CREATE EXTENSION postgis_tiger_geocoder;" --dbname={{dbname}}
   sudo_user: postgres
   when: db_created.changed or reset_db == True
+  ignore_errors: yes
 
 - name: ensure user has access to database
   sudo_user: postgres

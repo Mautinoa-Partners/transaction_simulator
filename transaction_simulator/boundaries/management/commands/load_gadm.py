@@ -10,23 +10,26 @@ from django.core.management.base import BaseCommand, CommandError
 from boundaries.models import *
 
 
+
 class Command(BaseCommand):
     args = ''
     help = 'loads the Global Adminstrative Boundaries Shapefile'
 
     def handle(self, *args, **options):
         try:
+            # Temporarily disable Debug
+            settings.configure(DEBUG=False)
             load_all_data()
 
         except Exception as ex:
-            raise CommandError("There was an error at the command level: %s" % (ex))
-            sys.exit()
+            print "There was an error at the command level: {0}".format(ex)
 
         self.success = True
 
         # Output mesages
 
         if self.success == True:
+            settings.configure(DEBUG=True)
             self.stdout.write('Successfully loaded the boundaries for global administrative boundaries.')
 
 
@@ -85,9 +88,9 @@ def load_layer(datasource, model, mapping, layer):
 
         try:
             lm = LayerMapping(model, datasource, mapping, transform=True, layer=layer)
-            lm.save(verbose=True, strict=True)
+            lm.save(verbose=True, strict=False)
 
         except Exception as ex:
 
-            raise CommandError("There was an error at the command level: %s" % (ex))
+            print "There was an error at the command level: {0}".format(ex)
 
