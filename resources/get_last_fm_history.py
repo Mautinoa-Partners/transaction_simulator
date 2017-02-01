@@ -8,7 +8,7 @@ pause_duration = 0.4
 
 url = 'https://ws.audioscrobbler.com/2.0/?method=user.get{}&user={}&api_key={}&limit={}&extended={}&page={}&format=json'
 limit = 200 #api lets you retrieve up to 200 records per call
-extended = 0 #api lets you retrieve extended data for each track, 0=no, 1=yes
+extended = 1 #api lets you retrieve extended data for each track, 0=no, 1=yes
 page = 1 #page of results to start retrieving at
 
 method = 'toptracks'
@@ -17,6 +17,7 @@ artist_names = []
 track_names = []
 play_counts = []
 response = requests.get(request_url).json()
+import pdb; pdb.set_trace()
 for item in response[method]['track']:
     artist_names.append(item['artist']['name'])
     track_names.append(item['name'])
@@ -63,7 +64,7 @@ top_albums.to_csv('lastfm_top_albums.csv', index=None, encoding='utf-8')
 top_albums.head()
 
 
-def get_scrobbles(method='recenttracks', username=username, key=key, limit=200, extended=0, page=1, pages=0):
+def get_scrobbles(method='recenttracks', username=username, key=key, limit=200, extended=1, page=1, pages=0):
     '''
     method: api method
     username/key: api credentials
