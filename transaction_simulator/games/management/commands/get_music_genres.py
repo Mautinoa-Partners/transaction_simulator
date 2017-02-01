@@ -1,3 +1,5 @@
+# https://kazuar.github.io/scrape-wikipedia-tutorial/
+
 # Imports
 
 #Django Management Command Imports
@@ -9,6 +11,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 import sys, os
 import urllib
+import json
 
 # Specific Python Library Imports
 
@@ -45,11 +48,35 @@ def fetch_music_genres():
     soup = BeautifulSoup(page, "html.parser")
 
     headers = soup.find_all('span', class_='mw-headline')
+    unwanted_headers = ['References', 'External links', 'Bibliography', 'Exclusions']
+
+    genres_and_subgenres = {}
 
     for header in headers:
 
         the_key = header.get_text()
-        print the_key
+
+        if the_key in unwanted_headers:
+
+            continue
+
+        else:
+
+            main_genre = the_key
+            u_list = header.parent.findNext('ul')
+            subgenres = [li.get_text().replace("\n"," ").replace("  "," ") for li in u_list.find_all('li')]
+
+            genres_and_subgenres[main_genre] = subgenres
+
+    print genres_and_subgenres
+
+    with open('./games/source_data/genres.json', 'w') as outfile:
+        json.dump(genres_and_subgenres, outfile, indent=4, sort_keys=True, separators=(',', ':'))
+
+
+
+
+
 
 
 
