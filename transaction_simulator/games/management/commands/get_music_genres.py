@@ -64,14 +64,22 @@ def fetch_music_genres():
 
             main_genre = the_key
             u_list = header.parent.findNext('ul')
-            subgenres = [li.get_text().replace("\n"," ").replace("  "," ") for li in u_list.find_all('li')]
+            subgenres = [li.get_text().replace("\n"," ").replace("  "," ").encode('utf-8') for li in u_list.find_all('li')]
 
             genres_and_subgenres[main_genre] = subgenres
 
     print genres_and_subgenres
 
-    with open('./games/source_data/genres.json', 'w') as outfile:
-        json.dump(genres_and_subgenres, outfile, indent=4, sort_keys=True, separators=(',', ':'))
+    with open('./games/source_data/genres.json', 'wb') as outfile:
+        json.dump(
+            genres_and_subgenres,
+            outfile,
+            indent=4,
+            ensure_ascii=False,
+            encoding='utf-8',
+            sort_keys=True,
+            separators=(',', ':')
+                  )
 
 
 
