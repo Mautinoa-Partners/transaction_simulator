@@ -20,7 +20,7 @@
         "Isicathamiya",
         "Jit",
         "Jùjú",
-        "Kapuka aka Boomba",
+        "Kapuka, aka Boomba",
         "Kadongo Kamu",
         "Kizomba",
         "Kuduro",
@@ -41,10 +41,13 @@
         "Seggae",
         "Semba",
         "Shangaan electro",
-        "Soukous Kwassa kwassa ",
-        "Kwassa kwassa",
+        {
+            "Soukous":[
+                "Kwassa kwassa"
+            ]
+        },
         "Taarab",
-        "Zouglou Cote D'Ivoire"
+        "Zouglou, Cote D'Ivoire"
     ],
     "Asian":[
         "Fann at-Tanbura",
@@ -98,8 +101,7 @@
         "cha cha cha",
         "Chutney",
         "Chutney soca",
-        "Compas",
-        "Mambo (music)"
+        "Compas"
     ],
     "Comedy":[
         "Comedy music",
@@ -108,7 +110,6 @@
         "Parody music"
     ],
     "Country":[
-        "Alternative country Cowpunk ",
         "Cowpunk",
         "Blues country",
         "Hokum",
@@ -117,19 +118,28 @@
         "Zydeco",
         "Country rap",
         "Red Dirt",
-        "Rockabilly Hellbilly music Psychobilly/Punkabilly ",
-        "Hellbilly music",
-        "Psychobilly/Punkabilly",
+        {
+            "Rockabilly":[
+                "Hellbilly music",
+                "Psychobilly/Punkabilly"
+            ]
+        },
         "Country rock",
         "Texas country",
         "Americana",
         "Australian country music",
         "Bakersfield sound",
-        "Bluegrass Progressive bluegrass Reactionary bluegrass ",
-        "Progressive bluegrass",
-        "Reactionary bluegrass",
-        "Cajun Cajun fiddle tunes ",
-        "Cajun fiddle tunes",
+        {
+            "Bluegrass":[
+                "Progressive bluegrass",
+                "Reactionary bluegrass"
+            ]
+        },
+        {
+            "Cajun":[
+                "Cajun fiddle tunes"
+            ]
+        },
         "Christian country music",
         "Classic country",
         "Close harmony",
@@ -170,40 +180,51 @@
         "New-age music"
     ],
     "Electronic":[
-        "Ambient Ambient dub Dark ambient Drone music Space music Illbient Psybient Isolationism Lowercase ",
-        "Ambient dub",
-        "Dark ambient",
-        "Drone music",
-        "Space music",
-        "Illbient",
-        "Psybient",
-        "Isolationism",
-        "Lowercase",
+        {
+            "Ambient":[
+                "Ambient dub",
+                "Dark ambient",
+                "Drone music",
+                "Space music",
+                "Illbient",
+                "Psybient",
+                "Isolationism",
+                "Lowercase"
+            ]
+        },
         "Asian Underground",
-        "Breakbeat Acid breaks Baltimore club Big beat Broken beat Florida breaks Nu-funk Miami bass  Jersey club Nu skool breaks ",
-        "Acid breaks",
-        "Baltimore club",
-        "Big beat",
-        "Broken beat",
-        "Florida breaks Nu-funk Miami bass ",
-        "Nu-funk",
-        "Miami bass",
-        "Jersey club",
-        "Nu skool breaks",
-        "Disco Afro / Cosmic disco Disco polo Euro disco Italo disco Nu-disco Space disco ",
-        "Afro / Cosmic disco",
-        "Disco polo",
-        "Euro disco",
-        "Italo disco",
-        "Nu-disco",
-        "Space disco",
-        "Downtempo Acid jazz Chill-out New-age music Space music  Trip hop ",
-        "Acid jazz",
-        "Chill-out",
-        "New-age music Space music ",
-        "Space music",
-        "Trip hop",
-        "Drum and bass Darkstep Drill and bass Drumstep Funkstep Hardstep Jump-up Liquid funk Neurofunk Neurohop Sambass Techstep ",
+        {
+            "Breakbeat":[
+                "Acid breaks",
+                "Baltimore club",
+                "Big beat",
+                "Broken beat",
+                "Florida breaks\n\nNu-funk\nMiami bass",
+                "Nu-funk",
+                "Miami bass",
+                "Jersey club",
+                "Nu skool breaks"
+            ]
+        },
+        {
+            "Disco":[
+                "Afro / Cosmic disco",
+                "Disco polo",
+                "Euro disco",
+                "Italo disco",
+                "Nu-disco",
+                "Space disco"
+            ]
+        },
+        {
+            "Downtempo":[
+                "Acid jazz",
+                "Chill-out",
+                "New-age music\n\nSpace music",
+                "Space music",
+                "Trip hop"
+            ]
+        },
         "Darkstep",
         "Drill and bass",
         "Drumstep",
@@ -232,7 +253,6 @@
         "Progressive folk",
         "Protest song",
         "Psychedelic folk",
-        "Singer-songwriter movement",
         "Skiffle",
         "Sung poetry",
         "Cowboy/Western music"
@@ -248,8 +268,6 @@
         "Crunk",
         "Crunkcore",
         "Drill",
-        "East Coast hip hop Baltimore club Brick City club Hardcore hip hop Mafioso rap New Jersey hip hop ",
-        "Baltimore club",
         "Brick City club",
         "Hardcore hip hop",
         "Mafioso rap",
@@ -269,10 +287,7 @@
         "Kwaito",
         "Lyrical hip hop",
         "Low Bap",
-        "Midwest hip hop Chicago hip hop Ghetto house  Detroit hip hop Ghettotech  St. Louis hip hop Twin Cities hip hop Horrorcore ",
-        "Chicago hip hop Ghetto house ",
         "Ghetto house",
-        "Detroit hip hop Ghettotech ",
         "Ghettotech",
         "St. Louis hip hop",
         "Twin Cities hip hop",
@@ -286,7 +301,6 @@
         "Political hip hop",
         "Ragga",
         "Reggaeton",
-        "Rap music Country-rap Cumbia rap Freestyle rap Gangsta rap Igbo rap Jazz rap Rap opera Rap rock Rapcore Rap metal  ",
         "Country-rap",
         "Cumbia rap",
         "Freestyle rap",
@@ -294,32 +308,24 @@
         "Igbo rap",
         "Jazz rap",
         "Rap opera",
-        "Rap rock Rapcore Rap metal ",
         "Rapcore",
         "Rap metal",
         "Reggae Español/Spanish Reggae",
-        "Southern hip hop Atlanta hip hop Snap music  Bounce music Crunk Houston hip hop Chopped and screwed  Miami bass ",
-        "Atlanta hip hop Snap music ",
         "Snap music",
         "Bounce music",
         "Crunk",
-        "Houston hip hop Chopped and screwed ",
         "Chopped and screwed",
-        "Miami bass",
         "Songo-salsa",
         "Trap",
-        "Trip hop (or Bristol sound)",
         "Turntablism",
         "Underground hip hop",
         "Urban Pasifika",
-        "West Coast hip hop Chicano rap G-funk Hyphy Jerkin' ",
         "Chicano rap",
         "G-funk",
         "Hyphy",
         "Jerkin'"
     ],
     "Jazz":[
-        "Acid jazz",
         "Afro-Cuban jazz",
         "Asian American jazz",
         "Avant-garde jazz",
@@ -373,69 +379,99 @@
         "West Coast jazz"
     ],
     "Latin":[
-        "Brazilian Axé Brazilian rock Brega Tecnobrega  Choro Forró Frevo Funk Carioca Lambada Zouk-Lambada  Maracatu Música popular brasileira Tropicalia  Música sertaneja Samba Pagode Samba rock  ",
-        "Axé",
-        "Brazilian rock",
-        "Brega Tecnobrega ",
-        "Tecnobrega",
-        "Choro",
-        "Forró",
-        "Frevo",
-        "Funk Carioca",
-        "Lambada Zouk-Lambada ",
-        "Zouk-Lambada",
-        "Maracatu",
-        "Música popular brasileira Tropicalia ",
-        "Tropicalia",
-        "Música sertaneja",
-        "Samba Pagode Samba rock ",
-        "Pagode",
-        "Samba rock",
+        {
+            "Brazilian":[
+                "Axé",
+                "Brazilian rock",
+                "Brega\n\nTecnobrega",
+                "Tecnobrega",
+                "Choro",
+                "Forró",
+                "Frevo",
+                "Funk Carioca",
+                "Lambada\n\nZouk-Lambada",
+                "Zouk-Lambada",
+                "Maracatu",
+                "Música popular brasileira\n\nTropicalia",
+                "Tropicalia",
+                "Música sertaneja",
+                "Samba\n\nPagode\nSamba rock",
+                "Pagode",
+                "Samba rock"
+            ]
+        },
+        {
+            "Brega":[
+                "Tecnobrega"
+            ]
+        },
+        {
+            "Lambada":[
+                "Zouk-Lambada"
+            ]
+        },
+        {
+            "Samba":[
+                "Pagode",
+                "Samba rock"
+            ]
+        },
         "Latin Christian",
-        "Latin jazz Afro-Cuban jazz Bossa Nova ",
         "Afro-Cuban jazz",
         "Bossa Nova",
-        "Latin pop Latin ballad ",
         "Latin ballad",
         "Latin swing",
-        "Latin rock Latin alternative Rock en Español ",
         "Latin alternative",
         "Rock en Español",
         "Reggaeton",
-        "Regional Mexican Banda Grupera Mariachi Ranchera  Norteño Tejano ",
         "Banda",
         "Grupera",
-        "Mariachi Ranchera ",
-        "Ranchera",
+        {
+            "Mariachi":[
+                "Ranchera"
+            ]
+        },
         "Norteño",
         "Tejano",
-        "Traditional: Flamenco Tango Folk Bullerengue Fado Huayno Mexican son Música criolla Nueva canción  ",
         "Flamenco",
         "Tango",
-        "Folk Bullerengue Fado Huayno Mexican son Música criolla Nueva canción ",
         "Bullerengue",
         "Fado",
         "Huayno",
         "Mexican son",
         "Música criolla",
         "Nueva canción",
-        "Tropical Bachata Bolero Criolla Cumbia Chicha Porro  Guajira Mambo Merengue Rumba Salsa Salsa romántica  Son Timba Tropipop Vallenato ",
-        "Bachata",
-        "Bolero",
-        "Criolla",
-        "Cumbia Chicha Porro ",
-        "Chicha",
-        "Porro",
-        "Guajira",
-        "Mambo",
-        "Merengue",
-        "Rumba",
-        "Salsa Salsa romántica ",
-        "Salsa romántica",
-        "Son",
-        "Timba",
-        "Tropipop",
-        "Vallenato"
+        {
+            "Tropical":[
+                "Bachata",
+                "Bolero",
+                "Criolla",
+                "Cumbia\n\nChicha\nPorro",
+                "Chicha",
+                "Porro",
+                "Guajira",
+                "Mambo",
+                "Merengue",
+                "Rumba",
+                "Salsa\n\nSalsa romántica",
+                "Salsa romántica",
+                "Son",
+                "Timba",
+                "Tropipop",
+                "Vallenato"
+            ]
+        },
+        {
+            "Cumbia":[
+                "Chicha",
+                "Porro"
+            ]
+        },
+        {
+            "Salsa":[
+                "Salsa romántica"
+            ]
+        }
     ],
     "Pop":[
         "Adult contemporary",
@@ -451,21 +487,26 @@
         "Christian pop",
         "Classical crossover",
         "Country pop",
-        "C-pop Mandopop ",
-        "Mandopop",
+        {
+            "C-pop":[
+                "Mandopop"
+            ]
+        },
         "Dance-pop",
-        "Disco polo",
         "Electropop",
-        "Europop Austropop Eurobeat French pop Italo dance Italo disco Laïkó Latin pop Nederpop Russian pop ",
-        "Austropop",
-        "Eurobeat",
-        "French pop",
-        "Italo dance",
-        "Italo disco",
-        "Laïkó",
-        "Latin pop",
-        "Nederpop",
-        "Russian pop",
+        {
+            "Europop":[
+                "Austropop",
+                "Eurobeat",
+                "French pop",
+                "Italo dance",
+                "Italo disco",
+                "Laïkó",
+                "Latin pop",
+                "Nederpop",
+                "Russian pop"
+            ]
+        },
         "Fado",
         "Folk pop",
         "Iranian pop",
@@ -479,7 +520,6 @@
         "New Romanticism",
         "Operatic pop",
         "Pop rap",
-        "Pop rock Power pop Soft rock ",
         "Power pop",
         "Soft rock",
         "Pop soul",
@@ -502,35 +542,42 @@
     "R&B and soul":[
         "Contemporary R&B",
         "Disco",
-        "Funk Deep funk ",
-        "Deep funk",
-        "Freestyle music Go-go ",
+        {
+            "Funk":[
+                "Deep funk"
+            ]
+        },
         "Go-go",
-        "Hip hop soul P-Funk Post-disco Boogie ",
         "P-Funk",
         "Post-disco",
         "Boogie",
         "New jack swing",
         "Rhythm and blues",
-        "Soul Blue-eyed soul Hip hop soul Northern soul Neo soul Southern soul ",
-        "Blue-eyed soul",
-        "Hip hop soul",
-        "Northern soul",
-        "Neo soul",
-        "Southern soul"
+        {
+            "Soul":[
+                "Blue-eyed soul",
+                "Hip hop soul",
+                "Northern soul",
+                "Neo soul",
+                "Southern soul"
+            ]
+        }
     ],
     "Rock":[
-        "Alternative rock Grunge Post-grunge  Indie rock Dunedin Sound Post-punk revival  Industrial rock Post-rock Post-metal  Sadcore Dream Pop Shoegaze  Slowcore ",
-        "Grunge Post-grunge ",
-        "Post-grunge",
-        "Indie rock Dunedin Sound Post-punk revival ",
+        {
+            "Grunge":[
+                "Post-grunge"
+            ]
+        },
         "Dunedin Sound",
         "Post-punk revival",
         "Industrial rock",
-        "Post-rock Post-metal ",
-        "Post-metal",
+        {
+            "Post-rock":[
+                "Post-metal"
+            ]
+        },
         "Sadcore",
-        "Dream Pop Shoegaze ",
         "Shoegaze",
         "Slowcore",
         "Art rock",
@@ -545,24 +592,18 @@
         "Garage rock",
         "Glam rock",
         "Hard rock",
-        "Heavy metal Alternative metal Avant-garde metal Black metal Symphonic black metal Viking metal War metal  Christian metal Unblack metal  Death metal Death 'n' roll Melodic death metal Technical death metal Goregrind  Doom metal Death-doom  Drone metal Folk metal Celtic metal Medieval metal Pagan metal  Funk metal Glam metal Gothic metal Grindcore Industrial metal Latin metal Metalcore Melodic metalcore Deathcore Mathcore  Neoclassical metal Nu metal Post-metal Power metal Progressive metal Djent  Rap metal Sludge metal Speed metal Symphonic metal Thrash metal Crossover thrash Groove metal  ",
         "Alternative metal",
         "Avant-garde metal",
-        "Black metal Symphonic black metal Viking metal War metal ",
         "Symphonic black metal",
         "Viking metal",
         "War metal",
-        "Christian metal Unblack metal ",
         "Unblack metal",
-        "Death metal Death 'n' roll Melodic death metal Technical death metal Goregrind ",
         "Death 'n' roll",
         "Melodic death metal",
         "Technical death metal",
         "Goregrind",
-        "Doom metal Death-doom ",
         "Death-doom",
         "Drone metal",
-        "Folk metal Celtic metal Medieval metal Pagan metal ",
         "Celtic metal",
         "Medieval metal",
         "Pagan metal",
@@ -572,63 +613,65 @@
         "Grindcore",
         "Industrial metal",
         "Latin metal",
-        "Metalcore Melodic metalcore Deathcore Mathcore ",
-        "Melodic metalcore",
-        "Deathcore",
-        "Mathcore",
+        {
+            "Metalcore":[
+                "Melodic metalcore",
+                "Deathcore",
+                "Mathcore"
+            ]
+        },
         "Neoclassical metal",
         "Nu metal",
-        "Post-metal",
         "Power metal",
-        "Progressive metal Djent ",
         "Djent",
         "Rap metal",
         "Sludge metal",
         "Speed metal",
         "Symphonic metal",
-        "Thrash metal Crossover thrash Groove metal ",
         "Crossover thrash",
         "Groove metal",
         "Jazz rock",
         "Math rock",
         "Neue Deutsche Härte",
-        "New wave World fusion ",
         "World fusion",
         "Paisley Underground",
         "Desert rock",
-        "Pop rock Soft rock ",
         "Soft rock",
-        "Progressive rock Canterbury scene Krautrock New prog Rock in Opposition Space rock ",
         "Canterbury scene",
         "Krautrock",
         "New prog",
         "Rock in Opposition",
         "Space rock",
-        "Psychedelic rock Acid rock Freakbeat Neo-psychedelia Raga rock ",
         "Acid rock",
         "Freakbeat",
         "Neo-psychedelia",
         "Raga rock",
-        "Punk rock Anarcho punk Crust punk D-beat   Art punk Christian punk Deathrock Digital hardcore Folk punk Celtic punk Cowpunk Gypsy punk  Garage punk Grindcore Crustgrind Noisegrind  Hardcore punk Post-hardcore Emo Screamo   Thrashcore Crossover thrash Powerviolence Street punk  Horror punk Pop punk Psychobilly Riot grrrl Ska punk Skate punk ",
-        "Anarcho punk Crust punk D-beat  ",
-        "Crust punk D-beat ",
         "D-beat",
         "Art punk",
         "Christian punk",
         "Deathrock",
         "Digital hardcore",
-        "Folk punk Celtic punk Cowpunk Gypsy punk ",
         "Celtic punk",
         "Cowpunk",
         "Gypsy punk",
         "Garage punk",
-        "Grindcore Crustgrind Noisegrind ",
-        "Crustgrind",
-        "Noisegrind",
-        "Hardcore punk Post-hardcore Emo Screamo   Thrashcore Crossover thrash Powerviolence Street punk ",
-        "Post-hardcore Emo Screamo  ",
-        "Emo Screamo ",
-        "Screamo",
+        {
+            "Grindcore":[
+                "Crustgrind",
+                "Noisegrind"
+            ]
+        },
+        {
+            "Post-hardcore":[
+                "Emo\n\nScreamo",
+                "Screamo"
+            ]
+        },
+        {
+            "Emo":[
+                "Screamo"
+            ]
+        },
         "Thrashcore",
         "Crossover thrash",
         "Powerviolence",
@@ -639,18 +682,19 @@
         "Riot grrrl",
         "Ska punk",
         "Skate punk",
-        "Post-punk Gothic rock No wave Noise rock ",
-        "Gothic rock",
-        "No wave",
-        "Noise rock",
-        "Rap rock Rapcore ",
+        {
+            "Post-punk":[
+                "Gothic rock",
+                "No wave",
+                "Noise rock"
+            ]
+        },
         "Rapcore",
         "Rock and roll",
         "Southern rock",
         "Stoner rock",
         "Sufi rock",
         "Surf rock",
-        "Visual kei Nagoya kei ",
         "Nagoya kei",
         "Worldbeat"
     ],
@@ -662,9 +706,7 @@
         "Filmi",
         "Indian pop",
         "Lavani",
-        "Luk Thung Luk Krung ",
         "Luk Krung",
-        "Manila Sound Original Pilipino Music ",
         "Original Pilipino Music",
         "V-pop",
         "Morlam",

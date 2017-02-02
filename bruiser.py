@@ -1,14 +1,3 @@
-# https://kazuar.github.io/scrape-wikipedia-tutorial/
-
-# Imports
-
-#Django Management Command Imports
-
-from django.core.management.base import BaseCommand, CommandError
-
-
-# Generic Python Library Imports
-
 import sys, os
 import urllib
 import json
@@ -16,25 +5,6 @@ import json
 # Specific Python Library Imports
 
 from bs4 import BeautifulSoup
-
-class Command(BaseCommand):
-    args = ''
-    help = 'Fetches Wikipedia Music Genre List'
-
-    def handle(self, *args, **options):
-        try:
-            fetch_music_genres()
-
-        except Exception as ex:
-            raise CommandError("There was an error at the command level: %s" % (ex))
-            sys.exit()
-
-        self.success = True
-
-        # Output mesages
-
-        if self.success == True:
-            self.stdout.write('Successfully fetched the Wikipedia list of music genres and subgenres.')
 
 def fetch_music_genres():
 
@@ -67,6 +37,7 @@ def fetch_music_genres():
 
             if li_text in dupes:
 
+                print "{0} is a duplicate. \n It was already addressed in a previous sub-list. The sublist is {1}".format(li_text,dupes)
                 continue
 
             else:
@@ -76,11 +47,13 @@ def fetch_music_genres():
                 if len(children) == 1 and hasattr(children[0], 'text') and li.get_text() == children[0].text:
 
                     subgenres.append(li.get_text().encode('utf-8'))
+                    print "Just appended {0} under Condition 1".format(li.get_text().encode('utf-8'))
 
                 elif len(children) == 3 and children[1] == u' ':
 
                     genre_with_alias = children[0].text + ', ' + children[2].text
                     subgenres.append(genre_with_alias)
+                    print "Just appended {0} under Condition 2".format(genre_with_alias)
 
                 elif len(children) > 3 and hasattr(children[0], 'text') and li.get_text().split()[0] == children[0].text:
 
@@ -88,16 +61,21 @@ def fetch_music_genres():
                     new_key = children[0].text
                     new_sublist = li.findNext('ul')
 
-                    new_values = [nli.get_text().encode('utf-8').strip() for nli in new_sublist.find_all('li')]
+                    new_values = [nli.get_text().encode('utf-8') for nli in new_sublist.find_all('li')]
 
                     new_dict[new_key] = new_values
                     subgenres.append(new_dict)
+                    print "Just appended {0} under Condition 3".format(new_dict)
                     dupes.extend(new_values)
 
                 else:
                     print "Something really bad happened and I could not append {0}".format(li.get_text().encode('utf-8'))
 
         genres_and_subgenres[main_genre] = subgenres
+
+    print genres_and_subgenres
+    import pdb; pdb.set_trace()
+
 
     with open('./games/source_data/genres.json', 'wb') as outfile:
         json.dump(
@@ -107,4 +85,13 @@ def fetch_music_genres():
             ensure_ascii=False,
             sort_keys=True,
             separators=(',', ':')
-        )
+
+
+if __name__ == '__main__':
+    fetch_music_genres()
+
+
+
+
+
+
