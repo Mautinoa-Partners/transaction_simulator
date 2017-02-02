@@ -13,6 +13,10 @@ ensure that Foreign Key relations are safe.
 
 # These are some variables that will be used by all the models so I am defining them here.
 
+SEX_CHOICES =
+    ('M', 'Male'),
+    ('F', 'Female')
+)
 
 class Crisis(models.Model):
 
@@ -172,6 +176,14 @@ class Person(models.Model):
         null=True,
         blank=True
     )
+
+    sex =  models.CharField(
+        max_length = 1,
+        choices = SEX_CHOICES,
+        default = F,
+    )
+    class Meta:
+        abstract = True
 
     # Returns the string representation of the model.
 
