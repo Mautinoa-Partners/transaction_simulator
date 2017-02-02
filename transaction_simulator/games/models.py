@@ -18,6 +18,14 @@ SEX_CHOICES =
     ('F', 'Female')
 )
 
+PRODUCT_CATEGORY_CHOICES = (
+('FOOD', 'Food'),
+('ENTERTAINMENT', 'Entertainment'),
+('CLOTHING', 'Clothing'),
+('RENT', 'Rent'),
+('UTILITIES', 'Utilities')
+)
+
 class Crisis(models.Model):
 
     name = models.CharField(
@@ -192,17 +200,9 @@ class Person(models.Model):
 
 class Transaction(models.Model):
 
-    CATEGORY_CHOICES= (
-        ('FOOD', 'Food'),
-        ('ENTERTAINMENT', 'Entertainment'),
-        ('CLOTHING', 'Clothing'),
-        ('RENT', 'Rent'),
-        ('UTILITIES', 'Utilities')
-    )
-
     category = models.CharField(
         max_length=1,
-        choices=CATEGORY_CHOICES,
+        choices=PRODUCT_CATEGORY_CHOICES,
         default='FOOD',
     )
 
