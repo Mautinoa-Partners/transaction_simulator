@@ -147,15 +147,28 @@ class Person(models.Model):
         related_name='transactions_for'
     )
 
-    age =models.IntegerField(
+    age = models.IntegerField(
         choices=[(i, i) for i in range(1, 100)],
         blank=True,
         null=True)
 
-    # GeoDjango Models
+    ethnicity = models.CharField(
+        default = '',
+        max_length=200,
+        null=True,
+        blank=True
+    )
 
-    address = models.PointField(
-        srid=4326,
+    sub_ethnicity = models.CharField(
+        default = '',
+        max_length=200,
+        null=True,
+        blank=True
+    )
+
+    clan = models.CharField(
+        default = '',
+        max_length=200,
         null=True,
         blank=True
     )
