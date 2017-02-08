@@ -282,6 +282,7 @@ class Senior(Person):
         proxy = True
 
 class Vendor(models.Model):
+
     name = models.CharField(
         default='',
         max_length=200,
@@ -337,6 +338,63 @@ class Vendor(models.Model):
         null = True
     )
 
+    def __unicode__(self):  # __unicode__ on Python 2
+        return self.name
+
+
+class Household(models.Model):
+
+    name = models.CharField(
+        default='',
+        max_length=200,
+        null=True,
+        blank=True
+    )
+
+    coordinates = models.PointField(
+        srid=4326,
+        null=True,
+        blank=True
+    )
+
+    country = models.ForeignKey(
+        'boundaries.Country',
+        blank=True,
+        null=True
+    )
+
+    admin_level_5 = models.ForeignKey(
+        'boundaries.Admin_Level_5',
+        blank=True,
+        null=True
+    )
+
+    admin_level_4 = models.ForeignKey(
+        'boundaries.Admin_Level_4',
+        blank=True,
+        null=True
+    )
+
+    admin_level_3 = models.ForeignKey(
+        'boundaries.Admin_Level_3',
+        blank=True,
+        null=True
+    )
+
+    admin_level_2 = models.ForeignKey(
+        'boundaries.Admin_Level_2',
+        blank=True,
+        null=True
+    )
+
+    admin_level_1 = models.ForeignKey(
+        'boundaries.Admin_Level_1',
+        blank=True,
+        null=True
+    )
+
+    def __unicode__(self):  # __unicode__ on Python 2
+        return self.name
 
 class Game(models.Model):
     name = models.CharField(
