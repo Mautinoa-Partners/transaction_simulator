@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-#GeoDjango imports
+# GeoDjango imports
 
 from django.contrib.gis.db import models
 
@@ -13,24 +13,47 @@ ensure that Foreign Key relations are safe.
 
 # These are some variables that will be used by all the models so I am defining them here.
 
-SEX_CHOICES =
+SEX_CHOICES = (
     ('M', 'Male'),
     ('F', 'Female')
 )
 
 PRODUCT_CATEGORY_CHOICES = (
-('FOOD', 'Food'),
-('ENTERTAINMENT', 'Entertainment'),
-('CLOTHING', 'Clothing'),
-('RENT', 'Rent'),
-('UTILITIES', 'Utilities')
+    ('FOOD', 'Food'),
+    ('ENTERTAINMENT', 'Entertainment'),
+    ('CLOTHING', 'Clothing'),
+    ('RENT', 'Rent'),
+    ('UTILITIES', 'Utilities')
 )
 
-class Crisis(models.Model):
+# http://stackoverflow.com/questions/6301741/django-integerfield-with-choice-options-how-to-create-0-10-integer-options
+AGE_RANGE = [(i, i) for i in range(1, 100)]
 
+# These are managers and other such utilities for the models
+
+class MinorManager(models.Manager):
+
+    def get_queryset(self):
+        return super(MinorManager, self).get_queryset().filter(age__range=(0,17))
+
+class AdultManager(models.Manager):
+
+    def get_queryset(self):
+        return super(AdultManager, self).get_queryset().filter(age__range=(18, 55))
+
+class SeniorManager(models.Manager):
+
+    def get_queryset(self):
+        return super(SeniorManager, self).get_queryset().filter(age__range=(56, 101))
+
+
+# These are the model classes
+
+
+class Crisis(models.Model):
     name = models.CharField(
         max_length=200,
-        default =''
+        default=''
     )
     start_date = models.DateTimeField(
         null=True,
@@ -47,8 +70,8 @@ class Crisis(models.Model):
     )
     country = models.ForeignKey(
         "boundaries.Country",
-        verbose_name= "country",
-        related_name = "crises",
+        verbose_name="country",
+        related_name="crises",
         null=True,
         blank=True,
         default=1
@@ -67,32 +90,30 @@ class Crisis(models.Model):
     )
 
     # Returns the string representation of the model.
-    def __unicode__(self):              # __unicode__ on Python 2
+    def __unicode__(self):  # __unicode__ on Python 2
         return self.name
 
 class Donor(models.Model):
-
     name = models.CharField(
-        default = '',
+        default='',
         max_length=200,
     )
     home_country = models.ForeignKey(
         "boundaries.Country",
-        verbose_name= "country",
-        related_name = "donors",
+        verbose_name="country",
+        related_name="donors",
         null=True,
         blank=True,
         default=1
     )
 
     # Returns the string representation of the model.
-    def __unicode__(self):              # __unicode__ on Python 2
+    def __unicode__(self):  # __unicode__ on Python 2
         return self.name
 
 class Scheme(models.Model):
-
     name = models.CharField(
-        default = '',
+        default='',
         max_length=200,
         null=True,
         blank=True
@@ -111,7 +132,7 @@ class Scheme(models.Model):
     payroll_amount = models.DecimalField(
         decimal_places=2,
         max_digits=20,
-        default = 0.0
+        default=0.0
     )
 
     donor = models.ForeignKey(
@@ -128,78 +149,10 @@ class Scheme(models.Model):
     )
 
     # Returns the string representation of the model.
-    def __unicode__(self):              # __unicode__ on Python 2
-        return self.name
-
-class Person(models.Model):
-
-    name = models.CharField(
-        default = '',
-        max_length=200,
-        null=True,
-        blank=True
-    )
-
-    scheme = models.ForeignKey(
-        Scheme,
-        null=True,
-        blank=True
-    )
-
-    balance = models.DecimalField(
-        decimal_places=2,
-        max_digits=20,
-        default = 0.0
-     )
-
-    transactions = models.ManyToManyField(
-        'self',
-        through='Transaction',
-        symmetrical=False,
-        related_name='transactions_for'
-    )
-
-    age = models.IntegerField(
-        choices=[(i, i) for i in range(1, 100)],
-        blank=True,
-        null=True)
-
-    ethnicity = models.CharField(
-        default = '',
-        max_length=200,
-        null=True,
-        blank=True
-    )
-
-    sub_ethnicity = models.CharField(
-        default = '',
-        max_length=200,
-        null=True,
-        blank=True
-    )
-
-    clan = models.CharField(
-        default = '',
-        max_length=200,
-        null=True,
-        blank=True
-    )
-
-    sex =  models.CharField(
-        max_length = 1,
-        choices = SEX_CHOICES,
-        default = F,
-    )
-    class Meta:
-        abstract = True
-
-    # Returns the string representation of the model.
-
-    def __unicode__(self):              # __unicode__ on Python 2
+    def __unicode__(self):  # __unicode__ on Python 2
         return self.name
 
 class Transaction(models.Model):
-
     category = models.CharField(
         max_length=1,
         choices=PRODUCT_CATEGORY_CHOICES,
@@ -209,17 +162,17 @@ class Transaction(models.Model):
     amount = models.DecimalField(
         decimal_places=2,
         max_digits=20,
-        default = 0.0
-     )
+        default=0.0
+    )
 
     buyer = models.ForeignKey(
-        Person,
-        related_name = "buyer",
+        "games.Person",
+        related_name="buyer",
         null=True
     )
 
     seller = models.ForeignKey(
-        Person,
+        "games.Person",
         related_name="seller",
         null=True
     )
@@ -236,20 +189,111 @@ class Transaction(models.Model):
         null=True
     )
 
-    def __unicode__(self):              # __unicode__ on Python 2
+    def __unicode__(self):  # __unicode__ on Python 2
         return self.pk
 
-class Game(models.Model):
-
+class Person(models.Model):
     name = models.CharField(
-        default = '',
+        default='',
+        max_length=200,
+        null=True,
+        blank=True
+    )
+
+    scheme = models.ForeignKey(
+        "games.Scheme",
+        null=True,
+        blank=True
+    )
+
+    balance = models.DecimalField(
+        decimal_places=2,
+        max_digits=20,
+        default=0.0
+    )
+
+    transactions = models.ManyToManyField(
+        'self',
+        through='Transaction',
+        symmetrical=False,
+        related_name='transactions_for'
+    )
+
+    age = models.IntegerField(
+        choices=AGE_RANGE,
+        blank=True,
+        null=True)
+
+    ethnicity = models.CharField(
+        default='',
+        max_length=200,
+        null=True,
+        blank=True
+    )
+
+    sub_ethnicity = models.CharField(
+        default='',
+        max_length=200,
+        null=True,
+        blank=True
+    )
+
+    clan = models.CharField(
+        default='',
+        max_length=200,
+        null=True,
+        blank=True
+    )
+
+    sex = models.CharField(
+        max_length=1,
+        choices=SEX_CHOICES,
+        default='F',
+    )
+
+    life_points = models.IntegerField(
+        default = 10,
+        null = True,
+        blank = True
+    )
+
+    # Returns the string representation of the model.
+
+    def __unicode__(self):  # __unicode__ on Python 2
+        return self.name
+
+class Minor(Person):
+
+    objects = MinorManager()
+
+    class Meta:
+        proxy = True
+
+class Adult(Person):
+
+    objects = AdultManager()
+
+    class Meta:
+        proxy = True
+
+class Senior(Person):
+
+    objects = SeniorManager()
+
+    class Meta:
+        proxy = True
+
+
+class Game(models.Model):
+    name = models.CharField(
+        default='',
         max_length=200,
         null=True,
         blank=True
     )
 
     number_of_turns = models.IntegerField(
-        default = 10,
+        default=10,
         null=True,
         blank=True
     )
@@ -268,17 +312,17 @@ class Game(models.Model):
     )
 
     description = models.CharField(
-        default = '',
-        max_length = 2000,
+        default='',
+        max_length=2000,
         null=True,
         blank=True
     )
 
-    def __unicode__(self):              # __unicode__ on Python 2
+    def __unicode__(self):  # __unicode__ on Python 2
         return self.name
 
-class Turn(models.Model):
 
+class Turn(models.Model):
     game = models.ForeignKey(
         'games.Game',
         related_name='turns',
@@ -292,12 +336,9 @@ class Turn(models.Model):
         blank=True
     )
 
-    def __unicode__(self):              # __unicode__ on Python 2
+    def __unicode__(self):  # __unicode__ on Python 2
 
         identifying_string = 'Game: %s, Turn %s' % (str(self.game), str(self.number))
         return identifying_string
-
-
-
 
 

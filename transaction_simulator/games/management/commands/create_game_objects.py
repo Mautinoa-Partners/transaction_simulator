@@ -207,19 +207,20 @@ def create_person():
     name = fake.name()
     scheme = Scheme.objects.order_by('?').first()
     balance = random.uniform(0.00, 10000.00)
+    age = random.randint(1,100)
 
-    for random_point in generate_random_points(scheme.crisis.zone.extent):
-        if scheme.crisis.country.geom.contains(random_point):
-            break
-
-    address = random_point
+    # for random_point in generate_random_points(scheme.crisis.zone.extent):
+    #     if scheme.crisis.country.geom.contains(random_point):
+    #         break
+    #
+    # address = random_point
 
     try:
         p = Person(
             name=name,
             scheme=scheme,
             balance=balance,
-            address=address
+            age=age
         )
 
         p.save()
