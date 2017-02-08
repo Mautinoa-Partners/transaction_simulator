@@ -46,9 +46,7 @@ class SeniorManager(models.Manager):
     def get_queryset(self):
         return super(SeniorManager, self).get_queryset().filter(age__range=(56, 101))
 
-
 # These are the model classes
-
 
 class Crisis(models.Model):
     name = models.CharField(
@@ -283,6 +281,62 @@ class Senior(Person):
     class Meta:
         proxy = True
 
+class Vendor(models.Model):
+    name = models.CharField(
+        default='',
+        max_length=200,
+        null=True,
+        blank=True
+    )
+
+    category = models.CharField(
+        max_length=1,
+        choices=PRODUCT_CATEGORY_CHOICES,
+        default='FOOD',
+    )
+
+    coordinates = models.PointField(
+        srid=4326,
+        null=True,
+        blank=True
+    )
+
+    country = models.ForeignKey(
+        'boundaries.Country',
+        blank = True,
+        null = True
+    )
+
+    admin_level_5 = models.ForeignKey(
+        'boundaries.Admin_Level_5',
+        blank = True,
+        null = True
+    )
+
+    admin_level_4 = models.ForeignKey(
+        'boundaries.Admin_Level_4',
+        blank = True,
+        null = True
+    )
+
+    admin_level_3 = models.ForeignKey(
+        'boundaries.Admin_Level_3',
+        blank = True,
+        null = True
+    )
+
+    admin_level_2 = models.ForeignKey(
+        'boundaries.Admin_Level_2',
+        blank = True,
+        null = True
+    )
+
+    admin_level_1 = models.ForeignKey(
+        'boundaries.Admin_Level_1',
+        blank = True,
+        null = True
+    )
+
 
 class Game(models.Model):
     name = models.CharField(
@@ -320,7 +374,6 @@ class Game(models.Model):
 
     def __unicode__(self):  # __unicode__ on Python 2
         return self.name
-
 
 class Turn(models.Model):
     game = models.ForeignKey(

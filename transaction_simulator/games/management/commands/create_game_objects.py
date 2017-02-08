@@ -312,6 +312,12 @@ def create_turn():
 #
 #         )
 
+### HELPER FUNCTIONS ###
+
+def read_music_data_for_ethnicity:
+    continue
+
+
 def generate_random_points(bounding_box):
     yield Point(
         x=random.uniform(bounding_box[0], bounding_box[2]),
