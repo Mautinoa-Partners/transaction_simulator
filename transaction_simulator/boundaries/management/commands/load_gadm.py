@@ -18,7 +18,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             # Temporarily disable Debug
-            settings.configure(DEBUG=False)
             load_all_data()
 
         except Exception as ex:
@@ -29,7 +28,6 @@ class Command(BaseCommand):
         # Output mesages
 
         if self.success == True:
-            settings.configure(DEBUG=True)
             self.stdout.write('Successfully loaded the boundaries for global administrative boundaries.')
 
 
@@ -64,6 +62,8 @@ def load_all_data():
         print "Currently working on layer %s, which is for model %s." % (layer, model)
 
         try:
+            model.objects.all().delete()
+            model.objects.raw('ALTER SEQUENCE games_donor_id_seq RESTART WITH 1;')
             load_layer(ds, model, mapping, layer)
 
         except Exception as ex:
