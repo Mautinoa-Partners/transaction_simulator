@@ -101,7 +101,40 @@
         "cha cha cha",
         "Chutney",
         "Chutney soca",
-        "Compas"
+        "Compas",
+        "Mambo",
+        "Merengue",
+        "Méringue",
+        "mosambique",
+        "Punta",
+        "Punta Rock",
+        "Rasin",
+        {
+            "Reggae":[
+                "Dancehall",
+                "Dub",
+                "Lovers rock",
+                "Ragga",
+                "Ragga jungle",
+                "Reggae fusion",
+                "Reggaeton"
+            ]
+        },
+        "Rocksteady",
+        "Rumba",
+        {
+            "Ska":[
+                "2 Tone",
+                "Ska punk"
+            ]
+        },
+        "salsa",
+        "Son cubano",
+        "songo",
+        "Soca",
+        "Timba",
+        "Twoubadou",
+        "Zouk"
     ],
     "Comedy":[
         "Comedy music",
@@ -299,8 +332,6 @@
         "New school hip hop",
         "Old school hip hop",
         "Political hip hop",
-        "Ragga",
-        "Reggaeton",
         "Country-rap",
         "Cumbia rap",
         "Freestyle rap",
@@ -423,7 +454,6 @@
         "Latin swing",
         "Latin alternative",
         "Rock en Español",
-        "Reggaeton",
         "Banda",
         "Grupera",
         {
@@ -680,7 +710,6 @@
         "Pop punk",
         "Psychobilly",
         "Riot grrrl",
-        "Ska punk",
         "Skate punk",
         {
             "Post-punk":[

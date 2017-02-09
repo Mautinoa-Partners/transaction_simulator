@@ -7,8 +7,8 @@ from django.conf import settings
 
 # Django model imports
 
-from boundaries.models import Country
-from games.models import Donor, Crisis, Scheme, Person, Game, Transaction, Turn
+from boundaries.models import Country, Admin_Level_5, Admin_Level_4, Admin_Level_3, Admin_Level_2, Admin_Level_1
+from games.models import *
 
 # GeoDjango field imports
 
@@ -28,6 +28,26 @@ import pandas as pd
 import radar
 from faker import Factory
 
+
+MODELS_AND_NAME_FIELDS = {
+
+    Country : 'name_english',
+    Admin_Level_5 : 'name_5',
+    Admin_Level_4 : 'name_4',
+    Admin_Level_3 : 'name_3',
+    Admin_Level_2 : 'name_2',
+    Admin_Level_1 : 'name_1',
+    Crisis :'name',
+    Donor : 'name',
+    Scheme : 'name',
+    Transaction : 'pk',
+    Person : 'name',
+    Vendor :'name',
+    Household : 'name',
+    Game : '',
+    Turn : ''
+
+}
 
 # Management command scaffolding
 
@@ -68,7 +88,6 @@ class Command(BaseCommand):
                 except KeyError as K:
                     print "Your model is not in the accepted list. You entered %s. Valid choices are: %s" % (
                     model, dispatcher.keys())
-
 
 def create_donor():
     # Remove any existing objects and reset the sequences
@@ -200,7 +219,9 @@ def create_scheme():
             print "The error was : %s " % (ex)
             continue
 
-def create_person():
+def create_person(**kwargs):
+
+    import pdb; pdb.set_trace()
 
     fake = Factory.create()
 
@@ -208,12 +229,6 @@ def create_person():
     scheme = Scheme.objects.order_by('?').first()
     balance = random.uniform(0.00, 10000.00)
     age = random.randint(1,100)
-
-    # for random_point in generate_random_points(scheme.crisis.zone.extent):
-    #     if scheme.crisis.country.geom.contains(random_point):
-    #         break
-    #
-    # address = random_point
 
     try:
         p = Person(
@@ -314,8 +329,59 @@ def create_turn():
 
 ### HELPER FUNCTIONS ###
 
-def read_music_data_for_ethnicity:
-    continue
+def read_music_data_for_ethnicity():
+    print "Music!"
+
+
+def get_object_by_name_or_id(test_model, name, search_type='iexact'):
+
+    # ensure we have a good model
+
+    if test_model not in MODELS_AND_NAME_FIELDS.keys():
+
+        sys.exit('You have specified an invalid model. Please choose from: {0}'.format(MODELS_AND_NAME_FIELDS.keys()))
+
+    else:
+
+        test_field = MODELS_AND_NAME_FIELDS[test_model]
+        filtration = test_field + '__' + search_type
+
+        try:
+            the_objects = test_model.objects.filter(**{filtration : name})
+
+            if len(the_objects) > 1:
+                return the_objects[0]
+            else:
+                return the_objects
+
+        except Exception:
+
+            print ('Searching by PK instead')
+
+            if int(name):
+                name = int(name)
+                try:
+                    the_object = test_model.objects.get(pk=name)
+                    return the_object
+
+                except Exception as ex:
+
+                    print "{0} was the exception".format(ex)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def generate_random_points(bounding_box):

@@ -17,6 +17,8 @@ import json
 
 from bs4 import BeautifulSoup
 
+FILE_PATH = './games/source_data/genres.json'
+
 class Command(BaseCommand):
     args = ''
     help = 'Fetches Wikipedia Music Genre List'
@@ -99,7 +101,7 @@ def fetch_music_genres():
 
         genres_and_subgenres[main_genre] = subgenres
 
-    with open('./games/source_data/genres.json', 'wb') as outfile:
+    with open(FILE_PATH, 'wb') as outfile:
         json.dump(
             genres_and_subgenres,
             outfile,

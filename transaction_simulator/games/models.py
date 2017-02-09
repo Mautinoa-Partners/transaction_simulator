@@ -49,6 +49,7 @@ class SeniorManager(models.Manager):
 # These are the model classes
 
 class Crisis(models.Model):
+
     name = models.CharField(
         max_length=200,
         default=''
@@ -107,7 +108,7 @@ class Donor(models.Model):
 
     # Returns the string representation of the model.
     def __unicode__(self):  # __unicode__ on Python 2
-        return self.name
+        return u'{0}'.format(self.name)
 
 class Scheme(models.Model):
     name = models.CharField(
@@ -148,7 +149,7 @@ class Scheme(models.Model):
 
     # Returns the string representation of the model.
     def __unicode__(self):  # __unicode__ on Python 2
-        return self.name
+        return u'{0}'.format(self.name)
 
 class Transaction(models.Model):
     category = models.CharField(
@@ -188,7 +189,7 @@ class Transaction(models.Model):
     )
 
     def __unicode__(self):  # __unicode__ on Python 2
-        return self.pk
+        return u'{0}'.format(self.pk)
 
 class Person(models.Model):
     name = models.CharField(
@@ -202,6 +203,12 @@ class Person(models.Model):
         "games.Scheme",
         null=True,
         blank=True
+    )
+
+    household = models.ForeignKey(
+        'games.Household',
+        null = True,
+        blank = True
     )
 
     balance = models.DecimalField(
@@ -258,7 +265,7 @@ class Person(models.Model):
     # Returns the string representation of the model.
 
     def __unicode__(self):  # __unicode__ on Python 2
-        return self.name
+        return u'{0}'.format(self.name)
 
 class Minor(Person):
 
@@ -339,7 +346,7 @@ class Vendor(models.Model):
     )
 
     def __unicode__(self):  # __unicode__ on Python 2
-        return self.name
+        return u'{0}'.format(self.name)
 
 
 class Household(models.Model):
@@ -394,7 +401,7 @@ class Household(models.Model):
     )
 
     def __unicode__(self):  # __unicode__ on Python 2
-        return self.name
+        return u'{0}'.format(self.name)
 
 class Game(models.Model):
     name = models.CharField(
@@ -431,7 +438,7 @@ class Game(models.Model):
     )
 
     def __unicode__(self):  # __unicode__ on Python 2
-        return self.name
+        return u'{0}'.format(self.name)
 
 class Turn(models.Model):
     game = models.ForeignKey(
@@ -449,7 +456,6 @@ class Turn(models.Model):
 
     def __unicode__(self):  # __unicode__ on Python 2
 
-        identifying_string = 'Game: %s, Turn %s' % (str(self.game), str(self.number))
-        return identifying_string
+        return u'{0}'.format(pk)
 
 
