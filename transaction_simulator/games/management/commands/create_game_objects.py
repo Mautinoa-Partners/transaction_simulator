@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 # Django management command imports
 
 from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
 
 # Django model imports
 
@@ -12,7 +11,6 @@ from games.models import *
 
 # GeoDjango field imports
 
-from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.geos import Point
 
 # Python Standard imports
@@ -21,6 +19,7 @@ import inspect
 import sys
 import random
 from datetime import timedelta, datetime
+import pytz
 
 # Python installed libraries imports
 
@@ -142,8 +141,8 @@ def create_crisis():
         print "Now working on %s" % (al)
         crisis_name = al
         begins = radar.random_datetime(
-            start=datetime(year=2000, month=5, day=24),
-            stop=datetime(year=2017, month=1, day=1)
+            start=datetime(year=2000, month=5, day=24, tzinfo=pytz.utc),
+            stop=datetime(year=2017, month=1, day=1, tzinfo=pytz.utc)
         )
         ends = begins + timedelta(days=random.uniform(5, 365))
 
@@ -221,8 +220,6 @@ def create_scheme():
 
 def create_person(**kwargs):
 
-    import pdb; pdb.set_trace()
-
     fake = Factory.create()
 
     name = fake.name()
@@ -298,34 +295,6 @@ def create_turn():
 
             except Exception as ex:
                 print "There was a problem creating a Turn: %s for Game: %s" % (the_turn_id, the_game)
-
-# def create_transaction(category=None, turn=None):
-#
-#     if category is None:
-#
-#         category = random.choice(Transaction.CATEGORY_CHOICES)[0]
-#
-#     else:
-#
-#         category = category
-#
-#     if turn is None:
-#
-#         turn = Turn.objects.order_by('?').first()
-#
-#     amount = decimal.Decimal(random.randrange(10000))/100
-#
-#     buyer = Person.objects.order_by('?').first()
-#
-#     seller = Person.objects.exclude(id=buyer.id).order_by('?').first()
-#
-#     try:
-#
-#         the_transaction = Transaction(
-#
-#             category=category,
-#
-#         )
 
 ### HELPER FUNCTIONS ###
 
