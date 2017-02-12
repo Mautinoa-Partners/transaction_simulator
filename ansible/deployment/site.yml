@@ -7,7 +7,7 @@
     - common
     - dbserver
     - webserver
-    - geoserver
-    - rserver
+#    - geoserver
+#    - rserver
 
 

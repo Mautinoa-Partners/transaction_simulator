@@ -88,7 +88,7 @@ def load_layer(datasource, model, mapping, layer):
 
         try:
             lm = LayerMapping(model, datasource, mapping, transform=True, layer=layer)
-            lm.save(verbose=True, strict=False)
+            lm.save(verbose=False, strict=True)
 
         except Exception as ex:
 
