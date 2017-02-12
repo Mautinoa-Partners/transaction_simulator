@@ -9,6 +9,16 @@
   become: true
   when: create_new_project == True or reset_db == True
 
+- name: create a directory for the log files
+  file: >
+    state=directory
+    owner=vagrant
+    group=www-data
+    path={{ gunicorn_log_directory }}
+    mode=777
+  become: true
+  when: create_new_project == True or reset_db == True
+
 - name: create a gunicorn system file
   template: >
     src=gunicorn.service.j2

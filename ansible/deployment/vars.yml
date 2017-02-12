@@ -13,6 +13,8 @@ create_new_project: False
 create_new_static: True
 static_dir: "{{ django_dir}}/static"
 reset_db: True
+gunicorn_log_location: "/home/vagrant/logs/{{ project_name }}/gunicorn.log"
+gunicorn_log_directory: "/home/vagrant/logs/{{ project_name }}"
 
 
 

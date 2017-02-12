@@ -1,3 +1,7 @@
+upstream {{ project_name }} {
+  server unix:{{socket_dir}}/{{ project_name }}.sock;
+}
+
 server {
     listen 80;
     server_name localhost;
@@ -9,6 +13,7 @@ server {
 
     location / {
         include proxy_params;
-        proxy_pass http://unix:{{ socket_dir}}/{{ project_name }}.sock;
+        proxy_redirect off;
+        proxy_pass http://{{ project_name }};
     }
 }
