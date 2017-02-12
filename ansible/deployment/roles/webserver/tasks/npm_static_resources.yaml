@@ -1,0 +1,4 @@
+- name: create the npm package.json file to the static directory
+  template: src=package.json dest={{ static_dir }}/package.json owner=root group=root mode=0644
+  become: True
+

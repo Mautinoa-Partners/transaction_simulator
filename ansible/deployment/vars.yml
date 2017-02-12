@@ -1,0 +1,20 @@
+project_name: transaction_simulator
+django_dir: "/vagrant/{{ project_name }}"
+venv_path: "/vagrant/projectenv"
+socket_dir: "/var/local/run/{{ project_name }}"
+dbuser: "{{ project_name }}"
+dbpassword: d5cda65eaa622604f9af738dad50339f
+dbname: "{{ project_name }}"
+locale: en_US.UTF-8
+tomcat_admin_user: mohanthecat
+tomcat_admin_password: tunasteak
+spf13_output_file_name: spf13-script.sh
+create_new_project: False
+create_new_static: True
+static_dir: "{{ django_dir}}/static"
+reset_db: True
+
+
+
+
+

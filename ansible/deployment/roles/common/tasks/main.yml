@@ -1,0 +1,64 @@
+---
+- name: install python 2
+  raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+  become: true
+
+- name: set locale to {{locale}}
+  command: /usr/sbin/update-locale LANG={{locale}} LC_ALL={{locale}}
+  become: true
+
+- name: ensure aptitude is present
+  apt: >
+    pkg=aptitude
+    state=installed
+    install_recommends=yes
+    update-cache=yes
+  become: true
+
+- name: update pre-installed packages after installing aptitude
+  become: true
+  apt: upgrade=full update_cache=yes
+
+- name: install apt-file
+  apt: >
+    pkg=apt-file
+    state=installed
+    install_recommends=yes
+  become: true
+
+- name: install required system packages.
+  apt: >
+    pkg={{item}}
+    state=installed
+    install_recommends=yes
+    update-cache=yes
+  become: true
+  with_items:
+      - apt-file
+      - build-essential
+      - python-setuptools
+      - python-pip
+      - virtualenvwrapper
+      - supervisor
+      - python-apt
+      - python-pycurl
+      - python-software-properties
+      - python-virtualenv
+      - python-dev
+      - vim
+      - libpq-dev
+      - supervisor
+      - python-psycopg2
+      - git
+      - gdal-bin
+      - postgresql
+      - postgresql-contrib
+      - postgis
+      - postgis-doc
+
+- name: do upgrades to newly installed packages
+  apt: upgrade=yes
+  become: true
+
+
+

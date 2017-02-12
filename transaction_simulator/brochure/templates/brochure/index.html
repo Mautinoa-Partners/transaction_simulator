@@ -1,0 +1,39 @@
+<h1>Mautinoa Transaction Simulator</h1>
+<p> Hello, Karnei! As you can see, I have left the front-end language bare for now, pending your prior branding work being added to the repo.</p>
+<p> It makes the welcome page a bit painful to read, but I'm afraid that's what we'll have to deal with for now.</p>
+<p> This is actually the first improvement you can make! The setup for this project is fairly standard. I have created a
+    directory at the top level of the Django project called <i>static</i>.  At configuration time, this contains: </p>
+<ol>
+    <li> Django and GeoDjango admin resources,</li>
+    <li> npm-modules directory with D3 and OpenLayers installed by npm.</li>
+</ol>
+
+<p>Feel free to add whatever resources to this that you need to for legibility and familiarity. I have no attachments to npm
+    and will happily use bower or forego front-end packaging entirely if you prefer.</p>
+
+<p> There are a few steps you will have to take to load the data to see how things work.  From the command line, once you have
+finished building virtual machine, logging in by SSH, etc., you will have to issue some Django management commands. I apologise for this,
+but our IT administrator has not gotten around to building me an AWS instance where we can share things, yet. </p>
+
+<p> So here is what you will have to do the first time with <i>python manage.py</i>:</p>
+<dl>
+    <dt>makemigrations</dt>
+    <dd>This will prepare the model definitions so that you can sync them to the database so that you can manipulate objects.</dd>
+    <dt>migrate</dt>
+    <dd>This will take the prepared model definitions and sync them to the database so you that you can manipulate objects.</dd>
+    <dt>fetch_gadm</dt>
+    <dd>This fetches the Global Administrative Boundaries (GADM) dataset and saves it to file</dd>
+    <dt>load_gadm</dt>
+    <dd>This loads the GADM into GeoDjango objects, viewable in the admin</dd>
+    <dt>create_game_objects</dt>
+    <dd>This creates dummy data for Donors, Crises, Schemes (Persons and Transactions to come) from data on my music listening patterns.</dd>
+</dl>
+<p> In case you don't know how to do this, it goes like this: <i>python manage.py fetch_gadm</i>. Just sub in the commands that you need to.
+    You will need to do these in that order, because each step presumes the existence of the others. </p>
+
+<p> What I have done for now is create List and Detail Views for model types CRISIS, DONOR and SCHEMA. They are all text.</p>
+<p> I am still working on the Transactions and Persons, almost have that done, but not quite. It's a little trickier than I'd hoped.</p>
+
+
+<a href="{% url 'games:crisis_index'%}">Crisis Index</a>    <a href="{% url 'games:donor_index' %}">Donor Index</a> <a href="{% url 'games:scheme_index' %}">Scheme Index</a>
+<a href="{% url 'games:person_index' %}">Person Index</a>

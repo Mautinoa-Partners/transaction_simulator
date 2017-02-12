@@ -1,0 +1,11 @@
+<h1> Crises In The World!</h1>
+
+{% if latest_crisis_list %}
+    <ul>
+    {% for crisis in latest_crisis_list %}
+        <li><a href="{% url 'games:crisis_detail' crisis.id %}">{{ crisis.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no Crisis! Today was a good day!</p>
+{% endif %}
