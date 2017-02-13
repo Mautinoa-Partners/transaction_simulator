@@ -1,11 +1,10 @@
-Django == 1.10.5
+Django == 1.10.2
 psycopg2
 gunicorn
 django-extensions
 pandas==0.18.1
 ipython
 django-model-utils
-geopandas
 Faker
 requests
 clint
