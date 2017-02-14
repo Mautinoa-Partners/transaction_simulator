@@ -60,5 +60,6 @@
   apt: upgrade=yes
   become: true
 
-
-
+# - name: upgrade python-pip
+#   command: "sudo pip install --upgrade pip"
+#   become: true

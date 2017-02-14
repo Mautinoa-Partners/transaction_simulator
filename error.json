@@ -1,0 +1,86 @@
+{
+  "changed": false,
+  "cmd": "/vagrant/projectenv/bin/pip2 install -U -r /vagrant/resources/python_requirements.txt",
+  "failed": true,
+  "msg": "stdout: New python executable in /vagrant/projectenv/bin/python2
+Also creating executable in /vagrant/projectenv/bin/python
+Installing setuptools, pkg_resources, pip, wheel...done.
+Running virtualenv with interpreter /usr/bin/python2
+Collecting Django==1.10.2 (from -r /vagrant/resources/python_requirements.txt (line 1))
+  Downloading Django-1.10.2-py2.py3-none-any.whl (6.8MB)
+Collecting psycopg2 (from -r /vagrant/resources/python_requirements.txt (line 2))
+  Downloading psycopg2-2.6.2.tar.gz (376kB)
+Collecting gunicorn (from -r /vagrant/resources/python_requirements.txt (line 3))
+  Downloading gunicorn-19.6.0-py2.py3-none-any.whl (114kB)
+Collecting django-extensions (from -r /vagrant/resources/python_requirements.txt (line 4))
+  Downloading django_extensions-1.7.6-py2.py3-none-any.whl (202kB)
+Collecting pandas==0.18.1 (from -r /vagrant/resources/python_requirements.txt (line 5))
+  Downloading pandas-0.18.1-cp27-cp27mu-manylinux1_x86_64.whl (14.2MB)
+Collecting ipython (from -r /vagrant/resources/python_requirements.txt (line 6))
+  Downloading ipython-5.2.2-py2-none-any.whl (749kB)
+Collecting django-model-utils (from -r /vagrant/resources/python_requirements.txt (line 7))
+  Downloading django-model-utils-2.6.1.tar.gz
+Collecting Faker (from -r /vagrant/resources/python_requirements.txt (line 8))
+  Downloading Faker-0.7.7-py2.py3-none-any.whl (562kB)
+Collecting requests (from -r /vagrant/resources/python_requirements.txt (line 9))
+  Downloading requests-2.13.0-py2.py3-none-any.whl (584kB)
+Collecting clint (from -r /vagrant/resources/python_requirements.txt (line 10))
+  Downloading clint-0.5.1.tar.gz
+Collecting djangorestframework (from -r /vagrant/resources/python_requirements.txt (line 11))
+  Downloading djangorestframework-3.5.4-py2.py3-none-any.whl (709kB)
+Collecting markdown (from -r /vagrant/resources/python_requirements.txt (line 12))
+  Downloading Markdown-2.6.8.tar.gz (307kB)
+Collecting django-filter (from -r /vagrant/resources/python_requirements.txt (line 13))
+  Downloading django_filter-1.0.1-py2.py3-none-any.whl (54kB)
+Collecting radar (from -r /vagrant/resources/python_requirements.txt (line 14))
+  Downloading radar-0.3.tar.gz
+Collecting ptpython (from -r /vagrant/resources/python_requirements.txt (line 15))
+  Downloading ptpython-0.36-py2-none-any.whl (46kB)
+Collecting pygraphviz (from -r /vagrant/resources/python_requirements.txt (line 16))
+  Downloading pygraphviz-1.3.1.zip (123kB)
+Requirement already up-to-date: six>=1.2 in /vagrant/projectenv/lib/python2.7/site-packages (from django-extensions->-r /vagrant/resources/python_requirements.txt (line 4))
+Collecting pytz>=2011k (from pandas==0.18.1->-r /vagrant/resources/python_requirements.txt (line 5))
+  Downloading pytz-2016.10-py2.py3-none-any.whl (483kB)
+Collecting python-dateutil (from pandas==0.18.1->-r /vagrant/resources/python_requirements.txt (line 5))
+  Downloading python_dateutil-2.6.0-py2.py3-none-any.whl (194kB)
+Collecting numpy>=1.7.0 (from pandas==0.18.1->-r /vagrant/resources/python_requirements.txt (line 5))
+  Downloading numpy-1.12.0-cp27-cp27mu-manylinux1_x86_64.whl (16.5MB)
+Collecting pickleshare (from ipython->-r /vagrant/resources/python_requirements.txt (line 6))
+  Downloading pickleshare-0.7.4-py2.py3-none-any.whl
+Collecting simplegeneric>0.8 (from ipython->-r /vagrant/resources/python_requirements.txt (line 6))
+  Downloading simplegeneric-0.8.1.zip
+    Complete output from command python setup.py egg_info:
+    Traceback (most recent call last):
+      File \"<string>\", line 1, in <module>
+      File \"/tmp/pip-build-sRuVPp/simplegeneric/setup.py\", line 39, in <module>
+        line.strip() for line in open('classifiers.txt') if line.strip()
+      File \"/usr/lib/python2.7/distutils/core.py\", line 111, in setup
+        _setup_distribution = dist = klass(attrs)
+      File \"/vagrant/projectenv/local/lib/python2.7/site-packages/setuptools/dist.py\", line 320, in __init__
+        _Distribution.__init__(self, attrs)
+      File \"/usr/lib/python2.7/distutils/dist.py\", line 287, in __init__
+        self.finalize_options()
+      File \"/vagrant/projectenv/local/lib/python2.7/site-packages/setuptools/dist.py\", line 386, in finalize_options
+        ep.require(installer=self.fetch_build_egg)
+      File \"/vagrant/projectenv/local/lib/python2.7/site-packages/pkg_resources/__init__.py\", line 2245, in require
+        items = working_set.resolve(reqs, env, installer)
+      File \"/vagrant/projectenv/local/lib/python2.7/site-packages/pkg_resources/__init__.py\", line 837, in resolve
+        new_requirements = dist.requires(req.extras)[::-1]
+      File \"/vagrant/projectenv/local/lib/python2.7/site-packages/pkg_resources/__init__.py\", line 2489, in requires
+        dm = self._dep_map
+      File \"/vagrant/projectenv/local/lib/python2.7/site-packages/pkg_resources/__init__.py\", line 2713, in _dep_map
+        self.__dep_map = self._compute_dependencies()
+      File \"/vagrant/projectenv/local/lib/python2.7/site-packages/pkg_resources/__init__.py\", line 2722, in _compute_dependencies
+        for req in self._parsed_pkg_info.get_all('Requires-Dist') or []:
+      File \"/vagrant/projectenv/local/lib/python2.7/site-packages/pkg_resources/__init__.py\", line 2704, in _parsed_pkg_info
+        metadata = self.get_metadata(self.PKG_INFO)
+      File \"/vagrant/projectenv/local/lib/python2.7/site-packages/pkg_resources/__init__.py\", line 1469, in get_metadata
+        return self._get(self._fn(self.egg_info, name))
+      File \"/vagrant/projectenv/local/lib/python2.7/site-packages/pkg_resources/__init__.py\", line 1580, in _get
+        with open(path, 'rb') as stream:
+    IOError: [Errno 2] No such file or directory: '/vagrant/projectenv/lib/python2.7/site-packages/packaging-16.8.dist-info/METADATA'
+    
+    ----------------------------------------
+
+:stderr: Command \"python setup.py egg_info\" failed with error code 1 in /tmp/pip-build-sRuVPp/simplegeneric/
+"]n}

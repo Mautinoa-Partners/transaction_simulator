@@ -8,6 +8,8 @@
 
 - include: ./roles/webserver/tasks/migrate_new_django_project.yaml
 
+- include: ./roles/webserver/tasks/load_custom_data_for_starting.yaml
+
 - include: ./roles/webserver/tasks/collect_django_static_and_fix_permissions.yaml
 
 - include: ./roles/webserver/tasks/create_directory_and_config_files_for_webservers.yaml

@@ -6,10 +6,10 @@
   become: true
   when: create_new_project == True or reset_db == True
 
-- name: upgrade pip
-  shell: "sudo pip install -U pip"
-  become: true
-
+# - name: Upgrade pip wheel and setuptools
+#   command: "sudo pip install --upgrade pip"
+#   become: true
+#   when: create_new_project == True or reset_db == True
 
 - name: create python virtualenv in /home/vagrant/project_directory with requirements
   pip: >

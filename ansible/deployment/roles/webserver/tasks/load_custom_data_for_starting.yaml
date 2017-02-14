@@ -1,0 +1,16 @@
+---
+- name: Run Django load_gadm
+  django_manage:
+    command: load_gadm
+    app_path: "{{ django_dir }}"
+    virtualenv: "{{ venv_path }}"
+  register: gadm_loaded = True
+  when: create_new_project == True or reset_db == True or gadm_loaded == false
+
+- name: Run Django create game objects
+  django_manage:
+    command: create_game_objects
+    app_path: "{{ django_dir }}"
+    virtualenv: "{{ venv_path }}"
+  register: game_loaded = True
+  when: create_new_project == True or reset_db == True or gadm_loaded == True orgame_loaded == False

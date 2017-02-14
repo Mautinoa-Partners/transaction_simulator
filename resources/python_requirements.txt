@@ -1,3 +1,4 @@
+pip
 Django == 1.10.2
 psycopg2
 gunicorn

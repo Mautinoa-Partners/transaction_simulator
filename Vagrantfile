@@ -6,15 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-16.04"
   config.vm.provider :virtualbox do |v|
     host = RbConfig::CONFIG['host_os']
-    if host =~ /darwin/
-        mem = `sysctl -n hw.memsize`.to_i / 1024
-    elsif host =~ /linux/
-        mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's kB//'` .to_i
-    elsif host =~ /mswin|mingw|cygwin/
-        mem = `wmic computersystem Get TotalPhysicalMemory`.split[1].to_i / 1024
-    end
-
-    mem = mem / 1024 / 4
+    mem = 8192
     v.customize ["modifyvm", :id, "--memory", mem]
 
     config.vm.network :private_network, ip: "192.168.33.10"
