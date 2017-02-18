@@ -135,3 +135,4 @@ ENV/
 .idea/*
 
 
+/transaction_simulator/transaction_simulator/scratch.txt

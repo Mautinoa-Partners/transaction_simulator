@@ -222,25 +222,28 @@ def create_person(**kwargs):
 
     fake = Factory.create()
 
-    name = fake.name()
-    scheme = Scheme.objects.order_by('?').first()
-    balance = random.uniform(0.00, 10000.00)
-    age = random.randint(1,100)
+    if 'name' not in kwargs:
+        kwargs.update({'name': fake.name()})
+
+    if 'scheme' not in kwargs:
+        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+
+    if 'balance' not in kwargs:
+        kwargs.update({'balance': random.uniform(0.00, 10000.00)})
+
+    if 'age' not in kwargs:
+        kwargs.update({'age' : random.randint(1,100)})
 
     try:
-        p = Person(
-            name=name,
-            scheme=scheme,
-            balance=balance,
-            age=age
-        )
+        p = Person(**kwargs)
 
         p.save()
-        print "Successfully created a person named : %s " % (name)
+        print "Successfully created a person named : %s " % (kwargs['name'])
 
     except Exception as ex:
 
         print "The error was : %s " % (ex)
+        import pdb; pdb.set_trace()
 
 def create_game():
     fake = Factory.create()
@@ -336,21 +339,6 @@ def get_object_by_name_or_id(test_model, name, search_type='iexact'):
                 except Exception as ex:
 
                     print "{0} was the exception".format(ex)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def generate_random_points(bounding_box):

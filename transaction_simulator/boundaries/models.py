@@ -202,6 +202,13 @@ class Admin_Level_1(models.Model):
 
     def __unicode__(self): return self.name_1
 
+class Timezone(models.Model):
+    tzid = models.CharField(max_length=30)
+    geom = models.MultiPolygonField()
+
+    def __unicode__(self):
+
+        return unicode(self.tzid)
 
 country_mapping = {
     'id_0' : 'ID_0',
@@ -366,5 +373,10 @@ admin_level_1_mapping = {
     'varname_1' : 'VARNAME_1',
     'shape_length' : 'Shape_Length',
     'shape_area' : 'Shape_Area',
+    'geom' : 'MULTIPOLYGON',
+}
+
+timezone_mapping = {
+    'tzid' : 'TZID',
     'geom' : 'MULTIPOLYGON',
 }
