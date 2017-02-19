@@ -26,30 +26,77 @@ PRODUCT_CATEGORY_CHOICES = (
     ('UTILITIES', 'Utilities')
 )
 
+MINOR_AGE_RANGE = range(0,18)
+
+ADULT_AGE_RANGE = range(18,56)
+
+SENIOR_AGE_RANGE = range(56,101)
+
 # http://stackoverflow.com/questions/6301741/django-integerfield-with-choice-options-how-to-create-0-10-integer-options
 AGE_RANGE = [(i, i) for i in range(1, 100)]
+
 
 # These are managers and other such utilities for the models
 
 class MinorManager(models.Manager):
 
     def get_queryset(self):
-        return super(MinorManager, self).get_queryset().filter(age__range=(0,17))
+
+        return super(MinorManager, self)\
+            .get_queryset() \
+            .filter(age__range=(MINOR_AGE_RANGE[0],MINOR_AGE_RANGE[-1]))
+
+    def create(self):
+        if not kwargs['age'] in MINOR_AGE_RANGE or 'age' not in kwargs:
+            age = random.choice(MINOR_AGE_RANGE)
+            kwargs.update({'age': age})
+            return super(MinorManager, self).create(**kwargs)
+
+        else:
+            return super(MinorManager, self).create(**kwargs)
+
 
 class AdultManager(models.Manager):
 
     def get_queryset(self):
-        return super(AdultManager, self).get_queryset().filter(age__range=(18, 55))
+
+        return super(AdultManager, self)\
+            .get_queryset()\
+            .filter(age__range=(ADULT_AGE_RANGE[0], ADULT_AGE_RANGE[-1]))
+
+    def create(self):
+        if not kwargs['age'] in ADULT_AGE_RANGE or 'age' not in kwargs:
+            age = random.choice(ADULT_AGE_RANGE)
+            kwargs.update({'age': age})
+            return super(AdultManager, self).create(**kwargs)
+
+        else:
+            return super(AdultManager,self).create(**kwargs)
+
 
 class SeniorManager(models.Manager):
 
     def get_queryset(self):
-        return super(SeniorManager, self).get_queryset().filter(age__range=(56, 101))
+
+        return super(SeniorManager, self)\
+            .get_queryset()\
+            .filter(age__range=(SENIOR_AGE_RANGE[0], SENIOR_AGE_RANGE[-1]))
+
+    def create(self):
+
+        if not kwargs['age'] in SENIOR_AGE_RANGE or 'age' not in kwargs:
+            age = random.choice(SENIOR_AGE_RANGE)
+            kwargs.update({'age': age})
+            return super(SeniorManager, self).create(**kwargs)
+
+        else:
+
+            return super(SeniorManager, self).create(**kwargs)
+
 
 # These are the model classes
 
 class Crisis(models.Model):
-
     name = models.CharField(
         max_length=200,
         default=''
@@ -92,6 +139,7 @@ class Crisis(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
         return self.name
 
+
 class Donor(models.Model):
     name = models.CharField(
         default='',
@@ -109,6 +157,7 @@ class Donor(models.Model):
     # Returns the string representation of the model.
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
+
 
 class Scheme(models.Model):
     name = models.CharField(
@@ -151,6 +200,7 @@ class Scheme(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
 
+
 class Transaction(models.Model):
     category = models.CharField(
         max_length=1,
@@ -191,6 +241,7 @@ class Transaction(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.pk)
 
+
 class Person(models.Model):
     name = models.CharField(
         default='',
@@ -207,8 +258,8 @@ class Person(models.Model):
 
     household = models.ForeignKey(
         'games.Household',
-        null = True,
-        blank = True
+        null=True,
+        blank=True
     )
 
     balance = models.DecimalField(
@@ -257,9 +308,9 @@ class Person(models.Model):
     )
 
     life_points = models.IntegerField(
-        default = 10,
-        null = True,
-        blank = True
+        default=10,
+        null=True,
+        blank=True
     )
 
     # Returns the string representation of the model.
@@ -267,29 +318,29 @@ class Person(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
 
-class Minor(Person):
 
+class Minor(Person):
     objects = MinorManager()
 
     class Meta:
         proxy = True
 
-class Adult(Person):
 
+class Adult(Person):
     objects = AdultManager()
 
     class Meta:
         proxy = True
 
-class Senior(Person):
 
+class Senior(Person):
     objects = SeniorManager()
 
     class Meta:
         proxy = True
 
-class Vendor(models.Model):
 
+class Vendor(models.Model):
     name = models.CharField(
         default='',
         max_length=200,
@@ -311,38 +362,38 @@ class Vendor(models.Model):
 
     country = models.ForeignKey(
         'boundaries.Country',
-        blank = True,
-        null = True
+        blank=True,
+        null=True
     )
 
     admin_level_5 = models.ForeignKey(
         'boundaries.Admin_Level_5',
-        blank = True,
-        null = True
+        blank=True,
+        null=True
     )
 
     admin_level_4 = models.ForeignKey(
         'boundaries.Admin_Level_4',
-        blank = True,
-        null = True
+        blank=True,
+        null=True
     )
 
     admin_level_3 = models.ForeignKey(
         'boundaries.Admin_Level_3',
-        blank = True,
-        null = True
+        blank=True,
+        null=True
     )
 
     admin_level_2 = models.ForeignKey(
         'boundaries.Admin_Level_2',
-        blank = True,
-        null = True
+        blank=True,
+        null=True
     )
 
     admin_level_1 = models.ForeignKey(
         'boundaries.Admin_Level_1',
-        blank = True,
-        null = True
+        blank=True,
+        null=True
     )
 
     def __unicode__(self):  # __unicode__ on Python 2
@@ -350,7 +401,6 @@ class Vendor(models.Model):
 
 
 class Household(models.Model):
-
     name = models.CharField(
         default='',
         max_length=200,
@@ -402,6 +452,7 @@ class Household(models.Model):
 
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
+
 
 class Game(models.Model):
     name = models.CharField(
@@ -440,6 +491,7 @@ class Game(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
 
+
 class Turn(models.Model):
     game = models.ForeignKey(
         'games.Game',
@@ -457,5 +509,3 @@ class Turn(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
 
         return u'{0}'.format(pk)
-
-

@@ -44,7 +44,8 @@ MODELS_AND_NAME_FIELDS = {
     Vendor :'name',
     Household : 'name',
     Game : '',
-    Turn : ''
+    Turn : '',
+    Senior : 'name'
 
 }
 
@@ -190,7 +191,7 @@ def create_scheme():
 
         print "Now working on %s" % (track)
         scheme_name = track
-        begins = radar.random_datetime(
+        begins = radar.random_datetime( # should be drawn from related Crisis object dates
             start=datetime(year=2000, month=5, day=24),
             stop=datetime(year=2017, month=1, day=1)
         )
@@ -218,7 +219,7 @@ def create_scheme():
             print "The error was : %s " % (ex)
             continue
 
-def create_person(**kwargs):
+def create_minor(**kwargs):
 
     fake = Factory.create()
 
@@ -235,7 +236,88 @@ def create_person(**kwargs):
         kwargs.update({'age' : random.randint(1,100)})
 
     try:
-        p = Person(**kwargs)
+        p = Minor(**kwargs)
+
+        p.save()
+        print "Successfully created a person named : %s " % (kwargs['name'])
+
+    except Exception as ex:
+
+        print "The error was : %s " % (ex)
+        import pdb; pdb.set_trace()
+
+def create_senior(**kwargs):
+
+    fake = Factory.create()
+
+    if 'name' not in kwargs:
+        kwargs.update({'name': fake.name()})
+
+    if 'scheme' not in kwargs:
+        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+
+    if 'balance' not in kwargs:
+        kwargs.update({'balance': random.uniform(0.00, 10000.00)})
+
+    if 'age' not in kwargs:
+        kwargs.update({'age' : random.choice(SENIOR_AGE_RANGE)})
+
+    try:
+        p = Senior(**kwargs)
+
+        p.save()
+        print "Successfully created a person named : %s " % (kwargs['name'])
+
+    except Exception as ex:
+
+        print "The error was : %s " % (ex)
+        import pdb; pdb.set_trace()
+
+def create_adult(**kwargs):
+
+    fake = Factory.create()
+
+    if 'name' not in kwargs:
+        kwargs.update({'name': fake.name()})
+
+    if 'scheme' not in kwargs:
+        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+
+    if 'balance' not in kwargs:
+        kwargs.update({'balance': random.uniform(0.00, 10000.00)})
+
+    if 'age' not in kwargs:
+        kwargs.update({'age' : random.choice(ADULT_AGE_RANGE)})
+
+    try:
+        p = Adult(**kwargs)
+
+        p.save()
+        print "Successfully created a person named : %s " % (kwargs['name'])
+
+    except Exception as ex:
+
+        print "The error was : %s " % (ex)
+        import pdb; pdb.set_trace()
+
+def create_adult(**kwargs):
+
+    fake = Factory.create()
+
+    if 'name' not in kwargs:
+        kwargs.update({'name': fake.name()})
+
+    if 'scheme' not in kwargs:
+        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+
+    if 'balance' not in kwargs:
+        kwargs.update({'balance': random.uniform(0.00, 10000.00)})
+
+    if 'age' not in kwargs:
+        kwargs.update({'age' : random.choice(ADULT_AGE_RANGE)})
+
+    try:
+        p = Senior(**kwargs)
 
         p.save()
         print "Successfully created a person named : %s " % (kwargs['name'])
@@ -272,7 +354,8 @@ def create_game():
 
     except Exception as ex:
 
-        print "The error was : %s " % (ex)
+        print "The error was : %s " % ex
+
 
 def create_turn():
 
@@ -339,6 +422,11 @@ def get_object_by_name_or_id(test_model, name, search_type='iexact'):
                 except Exception as ex:
 
                     print "{0} was the exception".format(ex)
+
+
+# def generate_household(**kwargs):
+
+
 
 
 def generate_random_points(bounding_box):
