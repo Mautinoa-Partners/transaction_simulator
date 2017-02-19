@@ -1,0 +1,1 @@
+alias fixpython="deactivate; rm -rf /vagrant/projectenv; virtualenv /vagrant/projectenv ; source /vagrant/projectenv/bin/activate; pip install -r /vagrant/resources/python_requirements.txt ; kickweb"

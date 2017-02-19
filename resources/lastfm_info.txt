@@ -1,0 +1,5 @@
+
+Application name	Test_Downloader
+API key	94197722f0aecbec0e38add4c99fbff9
+Shared secret	810944acdd9180729b1f380335677364
+Registered to	thedxindc
