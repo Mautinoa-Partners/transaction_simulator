@@ -6,21 +6,28 @@ from django.core.management.base import BaseCommand, CommandError
 
 # Django model imports
 
-from boundaries.models import Country, Admin_Level_5, Admin_Level_4, Admin_Level_3, Admin_Level_2, Admin_Level_1, Timezone
+from boundaries.models import Country, Admin_Level_5, Admin_Level_4, Admin_Level_3, Admin_Level_2, Admin_Level_1, \
+    Timezone
 from games.models import *
-
 
 # Python Standard imports
 
 import sys
 import random
+import pprint
+
+# datetime and timezone libraries
+
 from datetime import timedelta, datetime
+import radar
 import pytz
+from dateutil import *
+from dateutil.parser import *
+from dateutil.rrule import *
 
 # Python installed libraries imports
 
 import pandas as pd
-import radar
 from faker import Factory
 
 # List of boundaries from large to small, with associated property names: this will be iterated over
@@ -57,6 +64,7 @@ songs = pd.read_csv('games/source_data/lastfm_scrobbles.csv', error_bad_lines=Fa
     'track'].dropna()
 tracks = sorted(set(songs))
 
+
 # Management command scaffolding
 
 class Command(BaseCommand):
@@ -78,8 +86,8 @@ class Command(BaseCommand):
         if self.success == True:
             self.stdout.write('made a game with data')
 
-def make_game():
 
+def make_game():
     """Umbrella function for making a round"""
 
     print "Making a game!"
@@ -88,7 +96,7 @@ def make_game():
 
     game = Game.objects.first() or create_game_instance()
 
-    scheme = create_scheme_instance(donor=game.donor, crisis=game.crisis)
+    scheme = Scheme.objects.order_by('?') or create_scheme_instance(donor=game.donor, crisis=game.crisis)
     donor = game.donor
     crisis = game.crisis
 
@@ -99,21 +107,21 @@ def make_game():
 
     print "It has {0} turns.".format(turn_count)
 
-    for t in range(1, turn_count+1):
+    for t in range(1, turn_count + 1):
 
         print "In {0}, Turn {1}".format(game.name, t)
         try:
             create_turn_instance(game=game, number=t)
-            print "Successfully created Turn: {0} for Game {1}".format(t,game)
+            print "Successfully created Turn: {0} for Game {1}".format(t, game)
         except Exception as ex:
             sys.exit("There was a problem: {0}".format(ex))
 
     # Determine number of households and create them
     # along with people
 
-    household_count = random.randint(50,100)
+    household_count = random.randint(50, 100)
 
-    for h in range(1, household_count+1):
+    for h in range(1, household_count + 1):
 
         # Find a point within the crisis zone for the household,
         # assign it to a variable and use that in a kwarg
@@ -145,31 +153,33 @@ def make_game():
         create_vendor_instance(coordinates=vendor_coordinates, category=vendor_category)
         print "Successfully created a vendor!"
 
+    # now comes the fun part: calculating the paydays in the scheme duration
 
-
+    paydays = list(rrule(
+        DAILY,
+        interval=14,
+        dtstart=scheme.start_date,
+        until=scheme.end_date))
 
 def create_game_instance(**kwargs):
-
     """"Creates a game instance, saves it and returns it"""
 
     fake = Factory.create()
 
     if 'name' not in kwargs:
-        kwargs.update({'name' : fake.company()})
+        kwargs.update({'name': fake.company()})
 
     if 'number_of_turns' not in kwargs:
-        kwargs.update({'number_of_turns' : random.randint(1,20)})
+        kwargs.update({'number_of_turns': random.randint(1, 20)})
 
     if 'crisis' not in kwargs:
-        kwargs.update({'crisis' : Crisis.objects.order_by('?').first() or create_crisis_instance()})
-
+        kwargs.update({'crisis': Crisis.objects.order_by('?').first() or create_crisis_instance()})
 
     if 'donor' not in kwargs:
-        kwargs.update({'donor' : Donor.objects.order_by('?').first() or create_donor_instance()})
-
+        kwargs.update({'donor': Donor.objects.order_by('?').first() or create_donor_instance()})
 
     if 'description' not in kwargs:
-        kwargs.update({'description' : fake.paragraph(nb_sentences=1, variable_nb_sentences=True)})
+        kwargs.update({'description': fake.paragraph(nb_sentences=1, variable_nb_sentences=True)})
 
     try:
         new_game = Game(**kwargs)
@@ -179,12 +189,12 @@ def create_game_instance(**kwargs):
     except Exception as ex:
         print "There was an error creating the game. The error was {0}".format(ex)
 
-def create_donor_instance(**kwargs):
 
+def create_donor_instance(**kwargs):
     """Creates a donor instance, saves it and returns it"""
 
     if 'name' not in kwargs:
-        kwargs.update({'name': random.sample(band_names,1)[0]})
+        kwargs.update({'name': random.sample(band_names, 1)[0]})
 
     if 'home_country' not in kwargs:
         kwargs.update({'home_country': Country.objects.order_by('?').first()})
@@ -197,15 +207,14 @@ def create_donor_instance(**kwargs):
     except Exception as ex:
         print "There was an error creating the donor. The error was {0}".format(ex)
 
-def create_crisis_instance(**kwargs):
 
+def create_crisis_instance(**kwargs):
     """Creates a Crisis instance, saves it and returns it"""
 
     if 'name' not in kwargs:
-        kwargs.update({'name': random.sample(albums,1)[0]})
+        kwargs.update({'name': random.sample(albums, 1)[0]})
 
     if 'start_date' not in kwargs:
-
         begins = radar.random_datetime(
             start=datetime(year=2000, month=5, day=24, tzinfo=pytz.utc),
             stop=datetime(year=2017, month=1, day=1, tzinfo=pytz.utc)
@@ -213,17 +222,14 @@ def create_crisis_instance(**kwargs):
         kwargs.update({'start_date': begins})
 
     if 'end_date' not in kwargs:
-
         ends = kwargs['start_date'] + timedelta(days=random.uniform(5, 365))
         kwargs.update({'end_date': ends})
 
     if 'country' not in kwargs:
-
-        kwargs.update({'country' :Country.objects.order_by('?').first()})
+        kwargs.update({'country': Country.objects.order_by('?').first()})
 
     if 'radius' not in kwargs:
-
-        kwargs.update({'radius': random.uniform(0.0,5.0)})
+        kwargs.update({'radius': random.uniform(0.0, 5.0)})
 
     if 'origin' not in kwargs:
 
@@ -231,7 +237,7 @@ def create_crisis_instance(**kwargs):
             if kwargs['country'].geom.contains(random_point):
                 break
 
-        kwargs.update({'origin' : random_point})
+        kwargs.update({'origin': random_point})
         kwargs.update({'zone': random_point.buffer(kwargs['radius'])})
 
     if 'zone' not in kwargs:
@@ -246,8 +252,8 @@ def create_crisis_instance(**kwargs):
 
         print "There was a problem creating the crisis object. It was {0}".format(ex)
 
-def create_turn_instance(**kwargs):
 
+def create_turn_instance(**kwargs):
     """Creates, saves and returns a Turn instance"""
 
     if 'number' not in kwargs:
@@ -256,7 +262,7 @@ def create_turn_instance(**kwargs):
     if 'game' not in kwargs:
         sys.exit("You need to specify the game")
 
-    filtered_kwargs = dict((key,value) for key, value in kwargs.iteritems() if key in ['game', 'number'])
+    filtered_kwargs = dict((key, value) for key, value in kwargs.iteritems() if key in ['game', 'number'])
 
     try:
         new_turn = Turn(**filtered_kwargs)
@@ -266,15 +272,14 @@ def create_turn_instance(**kwargs):
     except Exception as ex:
         sys.exit("There was a problem creating your Turn instance: {0}".format(ex))
 
-def create_scheme_instance(**kwargs):
 
+def create_scheme_instance(**kwargs):
     """Creates, saves, and returns a Scheme instance"""
 
     if 'name' not in kwargs:
-        kwargs.update({'name': random.sample(tracks,1)[0]})
+        kwargs.update({'name': random.sample(tracks, 1)[0]})
 
     if 'start_date' not in kwargs:
-
         begins = radar.random_datetime(
             start=datetime(year=2000, month=5, day=24, tzinfo=pytz.utc),
             stop=datetime(year=2017, month=1, day=1, tzinfo=pytz.utc)
@@ -282,7 +287,6 @@ def create_scheme_instance(**kwargs):
         kwargs.update({'start_date': begins})
 
     if 'end_date' not in kwargs:
-
         ends = kwargs['start_date'] + timedelta(days=random.uniform(5, 365))
         kwargs.update({'end_date': ends})
 
@@ -290,11 +294,10 @@ def create_scheme_instance(**kwargs):
         kwargs.update({'payroll_amount': random.uniform(100, 1000)})
 
     if 'crisis' not in kwargs:
-        kwargs.update({'crisis': Crisis.objects.order_by('?').first() })
+        kwargs.update({'crisis': Crisis.objects.order_by('?').first()})
 
     if 'donor' not in kwargs:
-        kwargs.update({'donor': Donor.objects.order_by('?').first() })
-
+        kwargs.update({'donor': Donor.objects.order_by('?').first()})
 
     try:
         new_scheme = Scheme(**kwargs)
@@ -304,8 +307,8 @@ def create_scheme_instance(**kwargs):
     except Exception as ex:
         print "There was a problem creating your Scheme: {0}".format(ex)
 
-def create_household_instance(**kwargs):
 
+def create_household_instance(**kwargs):
     "Creates and saves a household instance"
 
     fake = Factory.create()
@@ -330,7 +333,7 @@ def create_household_instance(**kwargs):
 
             if containing_boundary is not None:
 
-                kwargs.update({property_field:containing_boundary})
+                kwargs.update({property_field: containing_boundary})
 
             else:
 
@@ -351,8 +354,8 @@ def create_household_instance(**kwargs):
 
     person_kwargs = {}
 
-    adult_count = random.choice([1,3])
-    minor_count = random.choice(range(0,6))
+    adult_count = random.choice([1, 3])
+    minor_count = random.choice(range(0, 6))
     senior_count = random.choice(range(0, 5))
 
     # Create the adults
@@ -369,9 +372,9 @@ def create_household_instance(**kwargs):
             print "It's a boy!"
 
             name = " ".join([fake.first_name_male(), kwargs['name']])
-            person_kwargs.update({'name' : name})
-            person_kwargs.update({'sex' : sex})
-            person_kwargs.update({'household' : new_household_instance})
+            person_kwargs.update({'name': name})
+            person_kwargs.update({'sex': sex})
+            person_kwargs.update({'household': new_household_instance})
 
             create_adult(**person_kwargs)
 
@@ -380,10 +383,9 @@ def create_household_instance(**kwargs):
             print "It's a girl!"
 
             name = " ".join([fake.first_name_female(), kwargs['name']])
-            person_kwargs.update({'name' : name})
-            person_kwargs.update({'sex' : sex})
-            person_kwargs.update({'household' : new_household_instance})
-
+            person_kwargs.update({'name': name})
+            person_kwargs.update({'sex': sex})
+            person_kwargs.update({'household': new_household_instance})
 
             create_adult(**person_kwargs)
 
@@ -402,10 +404,9 @@ def create_household_instance(**kwargs):
             print "It's a boy!"
 
             name = " ".join([fake.first_name_male(), kwargs['name']])
-            person_kwargs.update({'name' : name})
-            person_kwargs.update({'sex' : sex})
-            person_kwargs.update({'household' : new_household_instance})
-
+            person_kwargs.update({'name': name})
+            person_kwargs.update({'sex': sex})
+            person_kwargs.update({'household': new_household_instance})
 
             create_minor(**person_kwargs)
 
@@ -414,28 +415,27 @@ def create_household_instance(**kwargs):
             print "It's a girl!"
 
             name = " ".join([fake.first_name_female(), kwargs['name']])
-            person_kwargs.update({'name' : name})
-            person_kwargs.update({'sex' : sex})
-            person_kwargs.update({'household' : new_household_instance})
-
+            person_kwargs.update({'name': name})
+            person_kwargs.update({'sex': sex})
+            person_kwargs.update({'household': new_household_instance})
 
             create_minor(**person_kwargs)
 
-def create_minor(**kwargs):
 
+def create_minor(**kwargs):
     fake = Factory.create()
 
     if 'name' not in kwargs:
         kwargs.update({'name': fake.name()})
 
     if 'scheme' not in kwargs:
-        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+        kwargs.update({'scheme': Scheme.objects.order_by('?').first()})
 
     if 'balance' not in kwargs:
         kwargs.update({'balance': random.uniform(0.00, 10000.00)})
 
     if 'age' not in kwargs:
-        kwargs.update({'age' : random.randint(1,100)})
+        kwargs.update({'age': random.randint(1, 100)})
 
     try:
         p = Minor(**kwargs)
@@ -447,21 +447,21 @@ def create_minor(**kwargs):
 
         print "The error was : %s " % (ex)
 
-def create_senior(**kwargs):
 
+def create_senior(**kwargs):
     fake = Factory.create()
 
     if 'name' not in kwargs:
         kwargs.update({'name': fake.name()})
 
     if 'scheme' not in kwargs:
-        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+        kwargs.update({'scheme': Scheme.objects.order_by('?').first()})
 
     if 'balance' not in kwargs:
         kwargs.update({'balance': random.uniform(0.00, 10000.00)})
 
     if 'age' not in kwargs:
-        kwargs.update({'age' : random.choice(SENIOR_AGE_RANGE)})
+        kwargs.update({'age': random.choice(SENIOR_AGE_RANGE)})
 
     try:
         p = Senior(**kwargs)
@@ -473,21 +473,21 @@ def create_senior(**kwargs):
 
         print "The error was : %s " % (ex)
 
-def create_adult(**kwargs):
 
+def create_adult(**kwargs):
     fake = Factory.create()
 
     if 'name' not in kwargs:
         kwargs.update({'name': fake.name()})
 
     if 'scheme' not in kwargs:
-        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+        kwargs.update({'scheme': Scheme.objects.order_by('?').first()})
 
     if 'balance' not in kwargs:
         kwargs.update({'balance': random.uniform(0.00, 10000.00)})
 
     if 'age' not in kwargs:
-        kwargs.update({'age' : random.choice(ADULT_AGE_RANGE)})
+        kwargs.update({'age': random.choice(ADULT_AGE_RANGE)})
 
     try:
         p = Adult(**kwargs)
@@ -499,21 +499,21 @@ def create_adult(**kwargs):
 
         print "The error was : %s " % (ex)
 
-def create_person(**kwargs):
 
+def create_person(**kwargs):
     fake = Factory.create()
 
     if 'name' not in kwargs:
         kwargs.update({'name': fake.person.last_name()})
 
     if 'scheme' not in kwargs:
-        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+        kwargs.update({'scheme': Scheme.objects.order_by('?').first()})
 
     if 'balance' not in kwargs:
         kwargs.update({'balance': random.uniform(0.00, 10000.00)})
 
     if 'age' not in kwargs:
-        kwargs.update({'age' : random.choice(ADULT_AGE_RANGE)})
+        kwargs.update({'age': random.choice(ADULT_AGE_RANGE)})
 
     try:
         p = Person(**kwargs)
@@ -525,8 +525,8 @@ def create_person(**kwargs):
 
         print "The error was : %s " % (ex)
 
-def create_vendor_instance(**kwargs):
 
+def create_vendor_instance(**kwargs):
     "Creates and saves a vendor instance"
 
     fake = Factory.create()
@@ -551,7 +551,7 @@ def create_vendor_instance(**kwargs):
 
             if containing_boundary is not None:
 
-                kwargs.update({property_field:containing_boundary})
+                kwargs.update({property_field: containing_boundary})
 
             else:
 
@@ -564,5 +564,5 @@ def create_vendor_instance(**kwargs):
 
     except Exception as ex:
         print("There's a problem creating your Household: {0}").format(ex)
-        import pdb; pdb.set_trace()
-
+        import pdb;
+        pdb.set_trace()

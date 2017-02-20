@@ -445,7 +445,6 @@ class Household(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
 
-
 class Game(models.Model):
     name = models.CharField(
         default='',
@@ -497,6 +496,18 @@ class Turn(models.Model):
         null=True,
         blank=True
     )
+
+    start_date = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    end_date = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+
 
     def __unicode__(self):  # __unicode__ on Python 2
 
