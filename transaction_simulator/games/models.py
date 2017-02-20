@@ -93,7 +93,6 @@ class SeniorManager(models.Manager):
 
             return super(SeniorManager, self).create(**kwargs)
 
-
 # These are the model classes
 
 class Crisis(models.Model):
@@ -139,7 +138,6 @@ class Crisis(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
         return unicode(self.name)
 
-
 class Donor(models.Model):
     name = models.CharField(
         default='',
@@ -157,7 +155,6 @@ class Donor(models.Model):
     # Returns the string representation of the model.
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
-
 
 class Scheme(models.Model):
     name = models.CharField(
@@ -200,7 +197,6 @@ class Scheme(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
 
-
 class Transaction(models.Model):
     category = models.CharField(
         max_length=1,
@@ -240,7 +236,6 @@ class Transaction(models.Model):
 
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.pk)
-
 
 class Person(models.Model):
     name = models.CharField(
@@ -318,13 +313,11 @@ class Person(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
 
-
 class Minor(Person):
     objects = MinorManager()
 
     class Meta:
         proxy = True
-
 
 class Adult(Person):
     objects = AdultManager()
@@ -332,13 +325,11 @@ class Adult(Person):
     class Meta:
         proxy = True
 
-
 class Senior(Person):
     objects = SeniorManager()
 
     class Meta:
         proxy = True
-
 
 class Vendor(models.Model):
     name = models.CharField(
@@ -399,8 +390,8 @@ class Vendor(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
 
-
 class Household(models.Model):
+
     name = models.CharField(
         default='',
         max_length=200,

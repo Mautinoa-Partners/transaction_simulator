@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 # Django model imports
 
-from boundaries.models import Country, Admin_Level_5, Admin_Level_4, Admin_Level_3, Admin_Level_2, Admin_Level_1
+from boundaries.models import Country, Admin_Level_5, Admin_Level_4, Admin_Level_3, Admin_Level_2, Admin_Level_1, Timezone
 from games.models import *
 
 
@@ -23,9 +23,16 @@ import pandas as pd
 import radar
 from faker import Factory
 
-# GEOS Geometry Types
+# List of boundaries from large to small, with associated property names: this will be iterated over
 
-from django.contrib.gis.geos import Point, GEOSGeometry
+models_and_property_names = [
+    {Country: 'country'},
+    {Admin_Level_1: 'admin_level_1'},
+    {Admin_Level_2: 'admin_level_2'},
+    {Admin_Level_3: 'admin_level_3'},
+    {Admin_Level_4: 'admin_level_4'},
+    {Admin_Level_5: 'admin_level_5'}
+]
 
 # Self defined utility library
 
@@ -77,8 +84,17 @@ def make_game():
 
     print "Making a game!"
 
+    # Create a shell game object with a donor, crisis and scheme
+
     game = Game.objects.first() or create_game_instance()
 
+    scheme = create_scheme_instance(donor=game.donor, crisis=game.crisis)
+    donor = game.donor
+    crisis = game.crisis
+
+    print "Successfully created a scheme: {0}".format(scheme.name)
+
+    # Create turn objects for the game
     turn_count = game.number_of_turns
 
     print "It has {0} turns.".format(turn_count)
@@ -92,9 +108,23 @@ def make_game():
         except Exception as ex:
             sys.exit("There was a problem: {0}".format(ex))
 
-    crisis_name = game.crisis.name
+    # Determine number of households and create them
 
-    print "Donor {0} is working on Crisis {1} in Country {2}".format(game.donor.name,crisis_name, game.crisis.country.name_english)
+    household_count = random.randint(50,100)
+
+    for h in range(1, household_count+1):
+
+        # Find a point within the crisis zone for the household,
+        # assign it to a variable and use that in a kwarg
+
+        for random_point in generate_random_points(crisis.zone.extent):
+            if crisis.zone.contains(random_point):
+                break
+
+        household_coordinates = random_point
+
+        create_household_instance(coordinates=household_coordinates)
+        print "Successfully created a household!"
 
 def create_game_instance(**kwargs):
 
@@ -171,7 +201,7 @@ def create_crisis_instance(**kwargs):
 
     if 'radius' not in kwargs:
 
-        kwargs.update({'radius': random.uniform(0.0,50.0)})
+        kwargs.update({'radius': random.uniform(0.0,5.0)})
 
     if 'origin' not in kwargs:
 
@@ -196,6 +226,8 @@ def create_crisis_instance(**kwargs):
 
 def create_turn_instance(**kwargs):
 
+    """Creates, saves and returns a Turn instance"""
+
     if 'number' not in kwargs:
         sys.exit("You need to specify the turn number")
 
@@ -211,3 +243,81 @@ def create_turn_instance(**kwargs):
 
     except Exception as ex:
         sys.exit("There was a problem creating your Turn instance: {0}".format(ex))
+
+def create_scheme_instance(**kwargs):
+
+    """Creates, saves, and returns a Scheme instance"""
+
+    if 'name' not in kwargs:
+        kwargs.update({'name': random.sample(tracks,1)[0]})
+
+    if 'start_date' not in kwargs:
+
+        begins = radar.random_datetime(
+            start=datetime(year=2000, month=5, day=24, tzinfo=pytz.utc),
+            stop=datetime(year=2017, month=1, day=1, tzinfo=pytz.utc)
+        )
+        kwargs.update({'start_date': begins})
+
+    if 'end_date' not in kwargs:
+
+        ends = kwargs['start_date'] + timedelta(days=random.uniform(5, 365))
+        kwargs.update({'end_date': ends})
+
+    if 'payroll_amount' not in kwargs:
+        kwargs.update({'payroll_amount': random.uniform(100, 1000)})
+
+    if 'crisis' not in kwargs:
+        kwargs.update({'crisis': Crisis.objects.order_by('?').first() })
+
+    if 'donor' not in kwargs:
+        kwargs.update({'donor': Donor.objects.order_by('?').first() })
+
+
+    try:
+        new_scheme = Scheme(**kwargs)
+        new_scheme.save()
+        return new_scheme
+
+    except Exception as ex:
+        print "There was a problem creating your Scheme: {0}".format(ex)
+
+def create_household_instance(**kwargs):
+
+    "Creates, saves and returns a household instance"
+
+    fake = Factory.create()
+
+    # Get boundaries that intersect the crisis zone
+    # and then assign the right ones based on which one contains
+    # the coordinates for the household address
+
+    # Verify coordinates and zone
+
+    if 'name' not in kwargs:
+        kwargs.update({'name': fake.last_name()})
+
+    if 'coordinates' not in kwargs:
+        sys.exit("You need coordinates to create a Household")
+
+    for pairing in models_and_property_names:
+
+        for Boundary_Model, property_field in pairing.iteritems():
+
+            containing_boundary = which_polygon_contains_coordinates(Boundary_Model, kwargs['coordinates'])
+
+            if containing_boundary is not None:
+
+                kwargs.update({property_field:containing_boundary})
+
+            else:
+
+                continue
+
+    try:
+        new_household_instance = Household(**kwargs)
+        new_household_instance.save()
+        return new_household_instance
+
+    except Exception as ex:
+        sys.exit("There's a problem creating your Household: {0}").format(ex)

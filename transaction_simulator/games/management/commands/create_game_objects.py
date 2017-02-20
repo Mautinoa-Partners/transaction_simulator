@@ -307,7 +307,7 @@ def create_person(**kwargs):
     fake = Factory.create()
 
     if 'name' not in kwargs:
-        kwargs.update({'name': fake.name()})
+        kwargs.update({'name': fake.person.last_name()})
 
     if 'scheme' not in kwargs:
         kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
