@@ -86,6 +86,11 @@ def make_game():
     for t in range(1, turn_count+1):
 
         print "In {0}, Turn {1}".format(game.name, t)
+        try:
+            create_turn_instance(game=game, number=t)
+            print "Successfully created Turn: {0} for Game {1}".format(t,game)
+        except Exception as ex:
+            sys.exit("There was a problem: {0}".format(ex))
 
     crisis_name = game.crisis.name
 
@@ -188,3 +193,21 @@ def create_crisis_instance(**kwargs):
     except Exception as ex:
 
         print "There was a problem creating the crisis object. It was {0}".format(ex)
+
+def create_turn_instance(**kwargs):
+
+    if 'number' not in kwargs:
+        sys.exit("You need to specify the turn number")
+
+    if 'game' not in kwargs:
+        sys.exit("You need to specify the game")
+
+    filtered_kwargs = dict((key,value) for key, value in kwargs.iteritems() if key in ['game', 'number'])
+
+    try:
+        new_turn = Turn(**filtered_kwargs)
+        new_turn.save()
+        return new_turn
+
+    except Exception as ex:
+        sys.exit("There was a problem creating your Turn instance: {0}".format(ex))
