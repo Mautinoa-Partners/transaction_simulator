@@ -302,7 +302,7 @@ def create_adult(**kwargs):
         print "The error was : %s " % (ex)
         import pdb; pdb.set_trace()
 
-def create_adult(**kwargs):
+def create_person(**kwargs):
 
     fake = Factory.create()
 
@@ -319,7 +319,7 @@ def create_adult(**kwargs):
         kwargs.update({'age' : random.choice(ADULT_AGE_RANGE)})
 
     try:
-        p = Senior(**kwargs)
+        p = Person(**kwargs)
 
         p.save()
         print "Successfully created a person named : %s " % (kwargs['name'])
@@ -327,7 +327,6 @@ def create_adult(**kwargs):
     except Exception as ex:
 
         print "The error was : %s " % (ex)
-
 
 def create_household(**kwargs):
 
@@ -339,33 +338,7 @@ def create_household(**kwargs):
 
     # Set geography parameters: which boundaries and which coordinates
 
-    if 'country' not in kwargs:
-
-        kwargs.update({country : Country.objects.order_by('?').first()})
-
-    if 'coordinates' not in kwargs or kwargs['country'] not in Country.objects.filter(geom__intersects=kwargs['coordinates'])
-
-        for random_point in generate_random_points(kwargs['country'].geom.extent):
-            if kwargs['country'].geom.contains(random_point):
-                break
-
-        coordinates = random_point
-
-        kwargs.update({'coordinates': coordinates})
-
-    if 'admin_level_1' not in kwargs or kwargs['admin_level_1'] not in Admin_Level_1.objects.filter(geom__intersects=kwargs['coordinates']):
-
-        admin_level_1 = Admin_Level_1.objects.filter(geom__intersects=kwargs['coordinates'])[0]
-
-        kwargs.update({'admin_level_1' : admin_level_1})
-
-
-
-
-
-
-
-
+    print "Household"
 
 def create_game():
     fake = Factory.create()
@@ -468,11 +441,3 @@ def generate_random_points(bounding_box):
         y=random.uniform(bounding_box[1], bounding_box[2])
     )
 
-def get_random_object(model):
-    primo = model.objects.first()
-    ultimo = model.objects.last()
-    try:
-        the_object = model.objects.get(pk=random.randint(primo.id, ultimo.id))
-        return the_object
-    except Exception as ex:
-        get_random_object(model)

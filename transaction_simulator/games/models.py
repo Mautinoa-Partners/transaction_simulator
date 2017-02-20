@@ -137,7 +137,7 @@ class Crisis(models.Model):
 
     # Returns the string representation of the model.
     def __unicode__(self):  # __unicode__ on Python 2
-        return self.name
+        return unicode(self.name)
 
 
 class Donor(models.Model):
