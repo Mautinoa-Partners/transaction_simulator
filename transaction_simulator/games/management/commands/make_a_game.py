@@ -96,25 +96,32 @@ def make_game():
 
     game = Game.objects.first() or create_game_instance()
 
-    scheme = Scheme.objects.order_by('?') or create_scheme_instance(donor=game.donor, crisis=game.crisis)
     donor = game.donor
     crisis = game.crisis
+    Scheme.objects.all().delete()
+    scheme = create_scheme_instance(donor=donor, crisis=crisis)
+
 
     print "Successfully created a scheme: {0}".format(scheme.name)
 
     # Create turn objects for the game
+
     turn_count = game.number_of_turns
 
     print "It has {0} turns.".format(turn_count)
 
-    for t in range(1, turn_count + 1):
+    if len(game.turns.all()) != turn_count:
 
-        print "In {0}, Turn {1}".format(game.name, t)
-        try:
-            create_turn_instance(game=game, number=t)
-            print "Successfully created Turn: {0} for Game {1}".format(t, game)
-        except Exception as ex:
-            sys.exit("There was a problem: {0}".format(ex))
+        game.turns.all().delete()
+
+        for t in range(1, turn_count + 1):
+
+            print "In {0}, Turn {1}".format(game.name, t)
+            try:
+                create_turn_instance(game=game, number=t)
+                print "Successfully created Turn: {0} for Game {1}".format(t, game)
+            except Exception as ex:
+                sys.exit("There was a problem: {0}".format(ex))
 
     # Determine number of households and create them
     # along with people
@@ -154,12 +161,28 @@ def make_game():
         print "Successfully created a vendor!"
 
     # now comes the fun part: calculating the paydays in the scheme duration
+    # The paydays matter because there the days that each person gets his balance
+    # updated with a new cash infusion
 
     paydays = list(rrule(
         DAILY,
         interval=14,
         dtstart=scheme.start_date,
         until=scheme.end_date))
+
+    # now split the scheme duration up into contiguous equal blocks
+    # get start dates for each turn
+
+    interval_size = ((scheme.end_date - scheme.start_date) / game.number_of_turns).days
+
+    turn_starts = list(rrule(
+        DAILY,
+        interval=interval_size,
+        dtstart=scheme.start_date,
+        until=scheme.end_date
+    ))
+
+
 
 def create_game_instance(**kwargs):
     """"Creates a game instance, saves it and returns it"""

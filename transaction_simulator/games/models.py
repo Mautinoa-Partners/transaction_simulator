@@ -446,6 +446,7 @@ class Household(models.Model):
         return u'{0}'.format(self.name)
 
 class Game(models.Model):
+
     name = models.CharField(
         default='',
         max_length=200,
@@ -482,7 +483,6 @@ class Game(models.Model):
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
 
-
 class Turn(models.Model):
     game = models.ForeignKey(
         'games.Game',
@@ -507,8 +507,6 @@ class Turn(models.Model):
         blank=True
     )
 
-
-
     def __unicode__(self):  # __unicode__ on Python 2
 
-        return u'{0}'.format(pk)
+        return u'{0}'.format(self.number)
