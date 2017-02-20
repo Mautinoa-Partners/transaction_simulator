@@ -308,6 +308,7 @@ class Person(models.Model):
         blank=True
     )
 
+
     # Returns the string representation of the model.
 
     def __unicode__(self):  # __unicode__ on Python 2

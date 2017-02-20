@@ -284,7 +284,7 @@ def create_scheme_instance(**kwargs):
 
 def create_household_instance(**kwargs):
 
-    "Creates, saves and returns a household instance"
+    "Creates and saves a household instance"
 
     fake = Factory.create()
 
@@ -317,7 +317,192 @@ def create_household_instance(**kwargs):
     try:
         new_household_instance = Household(**kwargs)
         new_household_instance.save()
-        return new_household_instance
+        print "Saved a household: {0}".format(new_household_instance)
 
     except Exception as ex:
         sys.exit("There's a problem creating your Household: {0}").format(ex)
+
+    # Now we are going to determine the person composition of each household
+    # A household is going to have some number of minors, adults, seniors
+    # There must be at least one Adult but Minors and Seniors can be either zero/non-zero
+    # clear kwargs
+
+    person_kwargs = {}
+
+    adult_count = random.choice([1,3])
+    minor_count = random.choice(range(0,6))
+    senior_count = random.choice(range(0, 5))
+
+    # Create the adults
+
+    print "Gotta make {0} adults".format(adult_count)
+    for a in range(adult_count):
+
+        # Determine sex of person because this will affect name
+
+        sex = random.choice([choice[0] for choice in SEX_CHOICES])
+
+        if sex == 'M':
+
+            print "It's a boy!"
+
+            name = " ".join([fake.first_name_male(), kwargs['name']])
+            person_kwargs.update({'name' : name})
+            person_kwargs.update({'sex' : sex})
+            person_kwargs.update({'household' : new_household_instance})
+
+            create_adult(**person_kwargs)
+
+        else:
+
+            print "It's a girl!"
+
+            name = " ".join([fake.first_name_female(), kwargs['name']])
+            person_kwargs.update({'name' : name})
+            person_kwargs.update({'sex' : sex})
+            person_kwargs.update({'household' : new_household_instance})
+
+
+            create_adult(**person_kwargs)
+
+    # Create the minors
+
+    print "Gotta make {0} minors".format(minor_count)
+
+    for m in range(minor_count):
+
+        # Determine sex of person because this will affect name
+
+        sex = random.choice([choice[0] for choice in SEX_CHOICES])
+
+        if sex == 'M':
+
+            print "It's a boy!"
+
+            name = " ".join([fake.first_name_male(), kwargs['name']])
+            person_kwargs.update({'name' : name})
+            person_kwargs.update({'sex' : sex})
+            person_kwargs.update({'household' : new_household_instance})
+
+
+            create_minor(**person_kwargs)
+
+        else:
+
+            print "It's a girl!"
+
+            name = " ".join([fake.first_name_female(), kwargs['name']])
+            person_kwargs.update({'name' : name})
+            person_kwargs.update({'sex' : sex})
+            person_kwargs.update({'household' : new_household_instance})
+
+
+            create_minor(**person_kwargs)
+
+
+
+
+
+def create_minor(**kwargs):
+
+    fake = Factory.create()
+
+    if 'name' not in kwargs:
+        kwargs.update({'name': fake.name()})
+
+    if 'scheme' not in kwargs:
+        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+
+    if 'balance' not in kwargs:
+        kwargs.update({'balance': random.uniform(0.00, 10000.00)})
+
+    if 'age' not in kwargs:
+        kwargs.update({'age' : random.randint(1,100)})
+
+    try:
+        p = Minor(**kwargs)
+
+        p.save()
+        print "Successfully created a person named : %s " % (kwargs['name'])
+
+    except Exception as ex:
+
+        print "The error was : %s " % (ex)
+
+def create_senior(**kwargs):
+
+    fake = Factory.create()
+
+    if 'name' not in kwargs:
+        kwargs.update({'name': fake.name()})
+
+    if 'scheme' not in kwargs:
+        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+
+    if 'balance' not in kwargs:
+        kwargs.update({'balance': random.uniform(0.00, 10000.00)})
+
+    if 'age' not in kwargs:
+        kwargs.update({'age' : random.choice(SENIOR_AGE_RANGE)})
+
+    try:
+        p = Senior(**kwargs)
+
+        p.save()
+        print "Successfully created a person named : %s " % (kwargs['name'])
+
+    except Exception as ex:
+
+        print "The error was : %s " % (ex)
+
+def create_adult(**kwargs):
+
+    fake = Factory.create()
+
+    if 'name' not in kwargs:
+        kwargs.update({'name': fake.name()})
+
+    if 'scheme' not in kwargs:
+        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+
+    if 'balance' not in kwargs:
+        kwargs.update({'balance': random.uniform(0.00, 10000.00)})
+
+    if 'age' not in kwargs:
+        kwargs.update({'age' : random.choice(ADULT_AGE_RANGE)})
+
+    try:
+        p = Adult(**kwargs)
+
+        p.save()
+        print "Successfully created a person named : %s " % (kwargs['name'])
+
+    except Exception as ex:
+
+        print "The error was : %s " % (ex)
+
+def create_person(**kwargs):
+
+    fake = Factory.create()
+
+    if 'name' not in kwargs:
+        kwargs.update({'name': fake.person.last_name()})
+
+    if 'scheme' not in kwargs:
+        kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
+
+    if 'balance' not in kwargs:
+        kwargs.update({'balance': random.uniform(0.00, 10000.00)})
+
+    if 'age' not in kwargs:
+        kwargs.update({'age' : random.choice(ADULT_AGE_RANGE)})
+
+    try:
+        p = Person(**kwargs)
+
+        p.save()
+        print "Successfully created a person named : %s " % (kwargs['name'])
+
+    except Exception as ex:
+
+        print "The error was : %s " % (ex)
