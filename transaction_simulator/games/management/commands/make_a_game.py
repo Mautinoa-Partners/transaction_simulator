@@ -109,6 +109,7 @@ def make_game():
             sys.exit("There was a problem: {0}".format(ex))
 
     # Determine number of households and create them
+    # along with people
 
     household_count = random.randint(50,100)
 
@@ -125,6 +126,27 @@ def make_game():
 
         create_household_instance(coordinates=household_coordinates)
         print "Successfully created a household!"
+
+    print "Done with households, now moving on to vendors!"
+
+    # Create vendors in the zone, for now only one of each type
+
+    for vendor_category in [choice[0] for choice in PRODUCT_CATEGORY_CHOICES]:
+
+        # Find a point within the crisis zone for the vendor,
+        # assign it to a variable and use that in a kwarg
+
+        for random_point in generate_random_points(crisis.zone.extent):
+            if crisis.zone.contains(random_point):
+                break
+
+        vendor_coordinates = random_point
+
+        create_vendor_instance(coordinates=vendor_coordinates, category=vendor_category)
+        print "Successfully created a vendor!"
+
+
+
 
 def create_game_instance(**kwargs):
 
@@ -292,7 +314,7 @@ def create_household_instance(**kwargs):
     # and then assign the right ones based on which one contains
     # the coordinates for the household address
 
-    # Verify coordinates and zone
+    # Verify coordinates
 
     if 'name' not in kwargs:
         kwargs.update({'name': fake.last_name()})
@@ -399,10 +421,6 @@ def create_household_instance(**kwargs):
 
             create_minor(**person_kwargs)
 
-
-
-
-
 def create_minor(**kwargs):
 
     fake = Factory.create()
@@ -506,3 +524,45 @@ def create_person(**kwargs):
     except Exception as ex:
 
         print "The error was : %s " % (ex)
+
+def create_vendor_instance(**kwargs):
+
+    "Creates and saves a vendor instance"
+
+    fake = Factory.create()
+
+    # Get boundaries that intersect the crisis zone
+    # and then assign the right ones based on which one contains
+    # the coordinates for the vendor address
+
+    # Verify coordinates
+
+    if 'name' not in kwargs:
+        kwargs.update({'name': fake.company()})
+
+    if 'coordinates' not in kwargs:
+        sys.exit("You need coordinates to create a Household")
+
+    for pairing in models_and_property_names:
+
+        for Boundary_Model, property_field in pairing.iteritems():
+
+            containing_boundary = which_polygon_contains_coordinates(Boundary_Model, kwargs['coordinates'])
+
+            if containing_boundary is not None:
+
+                kwargs.update({property_field:containing_boundary})
+
+            else:
+
+                continue
+
+    try:
+        new_vendor_instance = Vendor(**kwargs)
+        new_vendor_instance.save()
+        print "Saved a vendor: {0}".format(new_vendor_instance)
+
+    except Exception as ex:
+        print("There's a problem creating your Household: {0}").format(ex)
+        import pdb; pdb.set_trace()
+
