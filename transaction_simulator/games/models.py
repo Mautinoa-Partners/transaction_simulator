@@ -238,6 +238,7 @@ class Transaction(models.Model):
         return u'{0}'.format(self.pk)
 
 class Person(models.Model):
+
     name = models.CharField(
         default='',
         max_length=200,
@@ -254,7 +255,8 @@ class Person(models.Model):
     household = models.ForeignKey(
         'games.Household',
         null=True,
-        blank=True
+        blank=True,
+        related_name='members'
     )
 
     balance = models.DecimalField(
@@ -398,6 +400,12 @@ class Household(models.Model):
         max_length=200,
         null=True,
         blank=True
+    )
+
+    scheme = models.ForeignKey(
+        'games.Scheme',
+        blank=True,
+        null=True
     )
 
     coordinates = models.PointField(

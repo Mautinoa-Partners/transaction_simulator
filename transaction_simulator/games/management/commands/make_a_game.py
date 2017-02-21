@@ -90,8 +90,6 @@ class Command(BaseCommand):
 def make_game():
     """Umbrella function for making a round"""
 
-    print "Making a game!"
-
     # Create a shell game object with a donor, crisis and scheme
 
     game = Game.objects.first() or create_game_instance()
@@ -101,14 +99,11 @@ def make_game():
     Scheme.objects.all().delete()
     scheme = create_scheme_instance(donor=donor, crisis=crisis)
 
-
-    print "Successfully created a scheme: {0}".format(scheme.name)
+    print "Created donor, crisis, scheme, game."
 
     # Create turn objects for the game
 
     turn_count = game.number_of_turns
-
-    print "It has {0} turns.".format(turn_count)
 
     if len(game.turns.all()) != turn_count:
 
@@ -116,12 +111,12 @@ def make_game():
 
         for t in range(1, turn_count + 1):
 
-            print "In {0}, Turn {1}".format(game.name, t)
             try:
                 create_turn_instance(game=game, number=t)
-                print "Successfully created Turn: {0} for Game {1}".format(t, game)
             except Exception as ex:
                 sys.exit("There was a problem: {0}".format(ex))
+
+    print "Added turns to game."
 
     # Determine number of households and create them
     # along with people
@@ -139,11 +134,9 @@ def make_game():
 
         household_coordinates = random_point
 
-        create_household_instance(coordinates=household_coordinates)
-        print "Successfully created a household!"
+        create_household_instance(coordinates=household_coordinates, scheme=scheme)
 
-    print "Done with households, now moving on to vendors!"
-
+    print "Created households with adults, minors, seniors."
     # Create vendors in the zone, for now only one of each type
 
     for vendor_category in [choice[0] for choice in PRODUCT_CATEGORY_CHOICES]:
@@ -158,7 +151,8 @@ def make_game():
         vendor_coordinates = random_point
 
         create_vendor_instance(coordinates=vendor_coordinates, category=vendor_category)
-        print "Successfully created a vendor!"
+
+    print "Created one vendor of each category."
 
     # now comes the fun part: calculating the paydays in the scheme duration
     # The paydays matter because there the days that each person gets his balance
@@ -171,7 +165,7 @@ def make_game():
         until=scheme.end_date))
 
     # now split the scheme duration up into contiguous equal blocks
-    # get start dates for each turn
+    # get start date, end date for each turn and assign it
 
     interval_size = ((scheme.end_date - scheme.start_date) / game.number_of_turns).days
 
@@ -181,6 +175,20 @@ def make_game():
         dtstart=scheme.start_date,
         until=scheme.end_date
     ))
+
+    ordered_turns = Turn.objects.filter(game=game).order_by('number')
+
+    for turn, turn_start in zip(ordered_turns, turn_starts):
+        turn.start_date = turn_start
+        turn.save
+
+    end_date_interval = (((scheme.end_date - scheme.start_date) / game.number_of_turns) - timedelta(days=1)).days
+
+    turn_ends = [turn.start_date + timedelta(days=end_date_interval) for turn in ordered_turns]
+
+    for turn, turn_end in zip(ordered_turns, turn_ends):
+        turn.end_date = turn_end
+        turn.save()
 
 
 
@@ -348,6 +356,9 @@ def create_household_instance(**kwargs):
     if 'coordinates' not in kwargs:
         sys.exit("You need coordinates to create a Household")
 
+    if 'scheme' not in kwargs:
+        sys.exit("You need a scheme to create a Household")
+
     for pairing in models_and_property_names:
 
         for Boundary_Model, property_field in pairing.iteritems():
@@ -365,7 +376,6 @@ def create_household_instance(**kwargs):
     try:
         new_household_instance = Household(**kwargs)
         new_household_instance.save()
-        print "Saved a household: {0}".format(new_household_instance)
 
     except Exception as ex:
         sys.exit("There's a problem creating your Household: {0}").format(ex)
@@ -383,7 +393,6 @@ def create_household_instance(**kwargs):
 
     # Create the adults
 
-    print "Gotta make {0} adults".format(adult_count)
     for a in range(adult_count):
 
         # Determine sex of person because this will affect name
@@ -391,8 +400,6 @@ def create_household_instance(**kwargs):
         sex = random.choice([choice[0] for choice in SEX_CHOICES])
 
         if sex == 'M':
-
-            print "It's a boy!"
 
             name = " ".join([fake.first_name_male(), kwargs['name']])
             person_kwargs.update({'name': name})
@@ -402,8 +409,6 @@ def create_household_instance(**kwargs):
             create_adult(**person_kwargs)
 
         else:
-
-            print "It's a girl!"
 
             name = " ".join([fake.first_name_female(), kwargs['name']])
             person_kwargs.update({'name': name})
@@ -414,8 +419,6 @@ def create_household_instance(**kwargs):
 
     # Create the minors
 
-    print "Gotta make {0} minors".format(minor_count)
-
     for m in range(minor_count):
 
         # Determine sex of person because this will affect name
@@ -423,8 +426,6 @@ def create_household_instance(**kwargs):
         sex = random.choice([choice[0] for choice in SEX_CHOICES])
 
         if sex == 'M':
-
-            print "It's a boy!"
 
             name = " ".join([fake.first_name_male(), kwargs['name']])
             person_kwargs.update({'name': name})
@@ -435,7 +436,31 @@ def create_household_instance(**kwargs):
 
         else:
 
-            print "It's a girl!"
+            name = " ".join([fake.first_name_female(), kwargs['name']])
+            person_kwargs.update({'name': name})
+            person_kwargs.update({'sex': sex})
+            person_kwargs.update({'household': new_household_instance})
+
+            create_minor(**person_kwargs)
+
+    # Create the seniors
+
+    for s in range(senior_count):
+
+        # Determine sex of person because this will affect name
+
+        sex = random.choice([choice[0] for choice in SEX_CHOICES])
+
+        if sex == 'M':
+
+            name = " ".join([fake.first_name_male(), kwargs['name']])
+            person_kwargs.update({'name': name})
+            person_kwargs.update({'sex': sex})
+            person_kwargs.update({'household': new_household_instance})
+
+            create_minor(**person_kwargs)
+
+        else:
 
             name = " ".join([fake.first_name_female(), kwargs['name']])
             person_kwargs.update({'name': name})
@@ -443,6 +468,7 @@ def create_household_instance(**kwargs):
             person_kwargs.update({'household': new_household_instance})
 
             create_minor(**person_kwargs)
+
 
 
 def create_minor(**kwargs):
@@ -462,9 +488,8 @@ def create_minor(**kwargs):
 
     try:
         p = Minor(**kwargs)
-
         p.save()
-        print "Successfully created a person named : %s " % (kwargs['name'])
+        return p
 
     except Exception as ex:
 
@@ -488,9 +513,8 @@ def create_senior(**kwargs):
 
     try:
         p = Senior(**kwargs)
-
         p.save()
-        print "Successfully created a person named : %s " % (kwargs['name'])
+        return p
 
     except Exception as ex:
 
@@ -514,9 +538,8 @@ def create_adult(**kwargs):
 
     try:
         p = Adult(**kwargs)
-
         p.save()
-        print "Successfully created a person named : %s " % (kwargs['name'])
+        return p
 
     except Exception as ex:
 
@@ -540,9 +563,8 @@ def create_person(**kwargs):
 
     try:
         p = Person(**kwargs)
-
         p.save()
-        print "Successfully created a person named : %s " % (kwargs['name'])
+        return p
 
     except Exception as ex:
 
@@ -583,9 +605,7 @@ def create_vendor_instance(**kwargs):
     try:
         new_vendor_instance = Vendor(**kwargs)
         new_vendor_instance.save()
-        print "Saved a vendor: {0}".format(new_vendor_instance)
+        return new_vendor_instance
 
     except Exception as ex:
-        print("There's a problem creating your Household: {0}").format(ex)
-        import pdb;
-        pdb.set_trace()
+        sys.exit("There's a problem creating your Vendor: {0}").format(ex)
