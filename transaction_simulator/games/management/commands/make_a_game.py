@@ -90,6 +90,9 @@ class Command(BaseCommand):
 def make_game():
     """Umbrella function for making a round"""
 
+    if not clear_game_objects():
+        sys.exit("Manually clear the game objects first.")
+
     # Create a shell game object with a donor, crisis and scheme
 
     game = Game.objects.first() or create_game_instance()
