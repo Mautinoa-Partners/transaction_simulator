@@ -204,6 +204,7 @@ class Scheme(models.Model):
 
 
 class Transaction(models.Model):
+
     category = models.CharField(
         max_length=1,
         choices=PRODUCT_CATEGORY_CHOICES,
@@ -223,11 +224,11 @@ class Transaction(models.Model):
     )
 
     seller = models.ForeignKey(
-        "games.Person",
+        "games.Vendor",
         related_name="seller",
         null=True
     )
-
+    
     date = models.DateTimeField(
         null=True,
         blank=True

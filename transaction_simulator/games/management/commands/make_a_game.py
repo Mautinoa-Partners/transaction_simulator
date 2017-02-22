@@ -64,6 +64,10 @@ songs = pd.read_csv('games/source_data/lastfm_scrobbles.csv', error_bad_lines=Fa
     'track'].dropna()
 tracks = sorted(set(songs))
 
+# CONSTANTS
+
+TRANSACTION_CATEGORY_CHOICES = [choice[0] for choice in PRODUCT_CATEGORY_CHOICES]
+RENT_AMOUNT = random.uniform(500.00, 1000.00) # right now rent is in fictional currencies
 
 # Management command scaffolding
 
@@ -142,7 +146,7 @@ def make_game():
     print "Created households with adults, minors, seniors."
     # Create vendors in the zone, for now only one of each type
 
-    for vendor_category in [choice[0] for choice in PRODUCT_CATEGORY_CHOICES]:
+    for vendor_category in TRANSACTION_CATEGORY_CHOICES:
 
         # Find a point within the crisis zone for the vendor,
         # assign it to a variable and use that in a kwarg
@@ -161,11 +165,13 @@ def make_game():
     # The paydays matter because there the days that each person gets his balance
     # updated with a new cash infusion
 
-    paydays = list(rrule(
+    unaltered_paydays = list(rrule(
         DAILY,
         interval=14,
         dtstart=scheme.start_date,
         until=scheme.end_date))
+
+    altered_paydays = [payday.date() for payday in unaltered_paydays]
 
     # now split the scheme duration up into contiguous equal blocks
     # get start date, end date for each turn and assign it
@@ -215,7 +221,7 @@ def make_game():
     # then for each household in the scheme
     # get the spenders
     # check if the date is the first: if so pay rent && check if the date is a payday: if so increment balance
-    # otherwise create a transaction in a random amount at a random time for each category
+    # otherwise create a transaction in a random amount at a random time for each category (50/50 chance for each except rent)
     # there are no lateral transfers at this time
 
     for turn in ordered_turns:
@@ -228,7 +234,25 @@ def make_game():
             until=turn.end_date
         ))
 
-        print "In turn {0}, the dates are {1}".format(turn.number, days_in_turn)
+        for day in days_in_turn:
+
+            for household in scheme.clients.all():
+
+                for spender in household.get_spenders():
+
+                    # assume that paydays happen before any spending
+                    if day.date() in altered_paydays:
+                        spender.balance += scheme.payroll_amount
+                        spender.save()
+
+                    # check for rent day!
+
+                    if day.day == 1:
+
+
+
+
+
 
 def create_game_instance(**kwargs):
     """"Creates a game instance, saves it and returns it"""
