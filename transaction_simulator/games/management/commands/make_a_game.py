@@ -86,6 +86,7 @@ class Command(BaseCommand):
         if self.success == True:
             self.stdout.write('made a game with data')
 
+
 def make_game():
     """Umbrella function for making a round"""
 
@@ -181,16 +182,53 @@ def make_game():
     ordered_turns = Turn.objects.filter(game=game).order_by('number')
 
     for turn, turn_start in zip(ordered_turns, turn_starts):
-        turn.start_date = turn_start
+        turn.start_date = turn_start.replace(hour=0, minute=0, second=0)
         turn.save
+
+    # fix first turn start date: midnighting the start date could move the scheme outside the
+    # duration of the crisis, so check it
+
+    first_turn = ordered_turns.first()
+    altered_start_date = first_turn.start_date
+
+    first_turn.start_date = altered_start_date if altered_start_date <= scheme.start_date else scheme.start_date
+    first_turn.save()
 
     end_date_interval = (((scheme.end_date - scheme.start_date) / game.number_of_turns) - timedelta(days=1)).days
 
     turn_ends = [turn.start_date + timedelta(days=end_date_interval) for turn in ordered_turns]
 
     for turn, turn_end in zip(ordered_turns, turn_ends):
-        turn.end_date = turn_end
+        turn.end_date = turn_end.replace(hour=0, minute=0, second=0)
         turn.save()
+
+    # fix last turn end date: midnighting the end date could move the scheme outside the duration
+    # of the crisis, so check it
+
+    last_turn = ordered_turns.last()
+    altered_end_date = last_turn.end_date
+
+    last_turn.end_date = altered_end_date if altered_end_date <= scheme.end_date else scheme.end_date
+
+    # now comes the iteration - we are going to first iterate over turns
+    # then for each day in the turn
+    # then for each household in the scheme
+    # get the spenders
+    # check if the date is the first: if so pay rent && check if the date is a payday: if so increment balance
+    # otherwise create a transaction in a random amount at a random time for each category
+    # there are no lateral transfers at this time
+
+    for turn in ordered_turns:
+        # create the list of days in the turn
+
+        days_in_turn = list(rrule(
+            DAILY,
+            interval=1,
+            dtstart=turn.start_date,
+            until=turn.end_date
+        ))
+
+        print "In turn {0}, the dates are {1}".format(turn.number, days_in_turn)
 
 def create_game_instance(**kwargs):
     """"Creates a game instance, saves it and returns it"""
@@ -469,6 +507,7 @@ def create_household_instance(**kwargs):
 
             create_minor(**person_kwargs)
 
+
 def create_minor(**kwargs):
     fake = Factory.create()
 
@@ -607,6 +646,7 @@ def create_vendor_instance(**kwargs):
 
     except Exception as ex:
         sys.exit("There's a problem creating your Vendor: {0}").format(ex)
+
 
 def create_transaction_instance(**kwargs):
     print "Tequila!"
