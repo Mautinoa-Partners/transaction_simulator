@@ -14,7 +14,6 @@ from games.models import *
 
 import sys
 import random
-import pprint
 
 # datetime and timezone libraries
 
@@ -44,6 +43,7 @@ models_and_property_names = [
 # Self defined utility library
 
 from utilities.st_functions import *
+from utilities.model_object_management import *
 
 # Last.fm music data for use in creating models
 
@@ -85,7 +85,6 @@ class Command(BaseCommand):
 
         if self.success == True:
             self.stdout.write('made a game with data')
-
 
 def make_game():
     """Umbrella function for making a round"""
@@ -192,8 +191,6 @@ def make_game():
     for turn, turn_end in zip(ordered_turns, turn_ends):
         turn.end_date = turn_end
         turn.save()
-
-
 
 def create_game_instance(**kwargs):
     """"Creates a game instance, saves it and returns it"""
@@ -472,8 +469,6 @@ def create_household_instance(**kwargs):
 
             create_minor(**person_kwargs)
 
-
-
 def create_minor(**kwargs):
     fake = Factory.create()
 
@@ -612,3 +607,6 @@ def create_vendor_instance(**kwargs):
 
     except Exception as ex:
         sys.exit("There's a problem creating your Vendor: {0}").format(ex)
+
+def create_transaction_instance(**kwargs):
+    print "Tequila!"
