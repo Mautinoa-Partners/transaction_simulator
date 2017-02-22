@@ -228,7 +228,7 @@ class Transaction(models.Model):
         related_name="seller",
         null=True
     )
-    
+
     date = models.DateTimeField(
         null=True,
         blank=True
@@ -350,6 +350,12 @@ class Vendor(models.Model):
         max_length=200,
         null=True,
         blank=True
+    )
+
+    balance = models.DecimalField(
+        decimal_places=2,
+        max_digits=20,
+        default=0.0
     )
 
     category = models.CharField(
