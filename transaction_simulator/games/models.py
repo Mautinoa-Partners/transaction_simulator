@@ -206,7 +206,7 @@ class Scheme(models.Model):
 class Transaction(models.Model):
 
     category = models.CharField(
-        max_length=1,
+        max_length=20,
         choices=PRODUCT_CATEGORY_CHOICES,
         default='FOOD',
     )

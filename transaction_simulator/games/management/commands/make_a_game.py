@@ -14,6 +14,7 @@ from games.models import *
 
 import sys
 import random
+import decimal
 
 # datetime and timezone libraries
 
@@ -67,7 +68,7 @@ tracks = sorted(set(songs))
 # CONSTANTS
 
 TRANSACTION_CATEGORY_CHOICES = [choice[0] for choice in PRODUCT_CATEGORY_CHOICES]
-RENT_AMOUNT = random.uniform(500.00, 1000.00) # right now rent is in fictional currencies
+RENT_AMOUNT = decimal.Decimal(random.uniform(500.00, 1000.00)).quantize(decimal.Decimal('.01')) # right now rent is in fictional currencies
 
 # Management command scaffolding
 
@@ -225,6 +226,9 @@ def make_game():
     # there are no lateral transfers at this time
 
     for turn in ordered_turns:
+
+        print "Now working on Turn {0}".format(turn.number)
+
         # create the list of days in the turn
 
         days_in_turn = list(rrule(
@@ -235,6 +239,7 @@ def make_game():
         ))
 
         for day in days_in_turn:
+            print "Now working on date {0}".format(day.date())
 
             for household in scheme.clients.all():
 
@@ -242,12 +247,25 @@ def make_game():
 
                     # assume that paydays happen before any spending
                     if day.date() in altered_paydays:
-                        spender.balance += scheme.payroll_amount
+                        spender.balance += decimal.Decimal(scheme.payroll_amount).quantize(decimal.Decimal('.01'))
                         spender.save()
 
                     # check for rent day!
 
                     if day.day == 1:
+
+                        landlord = Vendor.objects.filter(category='RENT')[0]
+
+
+                        create_transaction_instance(
+                            buyer=spender,
+                            seller=landlord,
+                            amount=RENT_AMOUNT,
+                            date=day,
+                            category='RENT',
+                            turn=turn
+                        )
+                        print "{0} paid {1} in rent to {2}".format(spender.name, RENT_AMOUNT, landlord.name)
 
 
 
@@ -649,6 +667,9 @@ def create_vendor_instance(**kwargs):
     if 'coordinates' not in kwargs:
         sys.exit("You need coordinates to create a Household")
 
+    if 'balance' not in kwargs:
+        kwargs.update({'balance': random.uniform(0.00, 10000.00)})
+
     for pairing in models_and_property_names:
 
         for Boundary_Model, property_field in pairing.iteritems():
@@ -673,4 +694,37 @@ def create_vendor_instance(**kwargs):
 
 
 def create_transaction_instance(**kwargs):
-    print "Tequila!"
+
+    # if any(['buyer', 'seller', 'category', 'date', 'amount', 'turn']) not in kwargs:
+    #     sys.exit("You are missing a required field to create a transaction.")
+
+    # First we must record the transaction - only then will we increment accounts
+    # This is an improvement over the real world, seriously.
+
+
+    try:
+        new_transaction_instance = Transaction(**kwargs)
+        new_transaction_instance.save()
+
+    except Exception as ex:
+
+        import pdb; pdb.set_trace()
+        sys.exit("There was a problem creating your Transaction: {0}".format(ex))
+
+    # this is critical : the amount leaves the buyer's accounts before it
+    # hits the seller's - this will be relevant later
+
+    buyer = kwargs['buyer']
+    seller = kwargs['seller']
+    price = kwargs['amount']
+
+    try:
+        buyer.balance -= price
+        buyer.save()
+
+        seller.balance += price
+        seller.save()
+        return new_transaction_instance
+
+    except Exception as ex:
+       sys.exit("There was a problem with your transaction: {0}".format(ex))
