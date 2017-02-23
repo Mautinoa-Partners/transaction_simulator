@@ -68,7 +68,13 @@ tracks = sorted(set(songs))
 # CONSTANTS
 
 TRANSACTION_CATEGORY_CHOICES = [choice[0] for choice in PRODUCT_CATEGORY_CHOICES]
-RENT_AMOUNT = decimal.Decimal(random.uniform(500.00, 1000.00)).quantize(decimal.Decimal('.01')) # right now rent is in fictional currencies
+RENT_AMOUNT = decimal.Decimal(random.uniform(500.00, 1000.00)).quantize(
+    decimal.Decimal('.01'))  # right now rent is in fictional currencies
+MARKET_TIMES = {
+    'open': datetime.strptime("7:00 AM", "%I:%M %p").time(),
+    'close': datetime.strptime("10:00 PM", "%I:%M %p").time()
+}
+
 
 # Management command scaffolding
 
@@ -253,9 +259,7 @@ def make_game():
                     # check for rent day!
 
                     if day.day == 1:
-
                         landlord = Vendor.objects.filter(category='RENT')[0]
-
 
                         create_transaction_instance(
                             buyer=spender,
@@ -266,10 +270,6 @@ def make_game():
                             turn=turn
                         )
                         print "{0} paid {1} in rent to {2}".format(spender.name, RENT_AMOUNT, landlord.name)
-
-
-
-
 
 
 def create_game_instance(**kwargs):
@@ -694,7 +694,6 @@ def create_vendor_instance(**kwargs):
 
 
 def create_transaction_instance(**kwargs):
-
     # if any(['buyer', 'seller', 'category', 'date', 'amount', 'turn']) not in kwargs:
     #     sys.exit("You are missing a required field to create a transaction.")
 
@@ -708,7 +707,8 @@ def create_transaction_instance(**kwargs):
 
     except Exception as ex:
 
-        import pdb; pdb.set_trace()
+        import pdb;
+        pdb.set_trace()
         sys.exit("There was a problem creating your Transaction: {0}".format(ex))
 
     # this is critical : the amount leaves the buyer's accounts before it
@@ -727,4 +727,4 @@ def create_transaction_instance(**kwargs):
         return new_transaction_instance
 
     except Exception as ex:
-       sys.exit("There was a problem with your transaction: {0}".format(ex))
+        sys.exit("There was a problem with your transaction: {0}".format(ex))
