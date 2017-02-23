@@ -264,13 +264,15 @@ def make_game():
                     # check for rent day!
 
                     if day.day == 1:
+
                         landlord = Vendor.objects.filter(category='RENT')[0]
+                        transaction_time = radar.random_datetime(start=earliest_time, stop=latest_time)
 
                         create_transaction_instance(
                             buyer=spender,
                             seller=landlord,
                             amount=RENT_AMOUNT,
-                            date=day,
+                            date=transaction_time,
                             category='RENT',
                             turn=turn
                         )
