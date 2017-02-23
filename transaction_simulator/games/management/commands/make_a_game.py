@@ -247,8 +247,8 @@ def make_game():
         for day in days_in_turn:
 
             print "Now working on date {0}".format(day.date())
-            earliest_transaction_time = datetime.combine(day.date(), MARKET_TIMES['open'])
-            latest_transaction_time = datetime.combine(day.date(), MARKET_TIMES['close'])
+            earliest_time = datetime.combine(day.date(), MARKET_TIMES['open']).replace(tzinfo=pytz.UTC)
+            latest_time = datetime.combine(day.date(), MARKET_TIMES['close']).replace(tzinfo=pytz.UTC)
 
 
 
@@ -307,7 +307,6 @@ def create_game_instance(**kwargs):
     except Exception as ex:
         print "There was an error creating the game. The error was {0}".format(ex)
 
-
 def create_donor_instance(**kwargs):
     """Creates a donor instance, saves it and returns it"""
 
@@ -324,7 +323,6 @@ def create_donor_instance(**kwargs):
 
     except Exception as ex:
         print "There was an error creating the donor. The error was {0}".format(ex)
-
 
 def create_crisis_instance(**kwargs):
     """Creates a Crisis instance, saves it and returns it"""
