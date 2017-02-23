@@ -245,7 +245,12 @@ def make_game():
         ))
 
         for day in days_in_turn:
+
             print "Now working on date {0}".format(day.date())
+            earliest_transaction_time = datetime.combine(day.date(), MARKET_TIMES['open'])
+            latest_transaction_time = datetime.combine(day.date(), MARKET_TIMES['close'])
+
+
 
             for household in scheme.clients.all():
 
