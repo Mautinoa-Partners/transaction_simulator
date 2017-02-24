@@ -32,10 +32,9 @@ from dateutil.rrule import *
 from utilities.st_functions import *
 from utilities.model_object_management import *
 
-
 # CONSTANTS
 
-TRANSACTION_CATEGORY_CHOICES = [choice[0] for choice in PRODUCT_CATEGORY_CHOICES if choice[0] != 'RENT']
+TRANSACTION_CATEGORY_CHOICES = [choice[0] for choice in PRODUCT_CATEGORY_CHOICES if choice[0] != "RENT"]
 RENT_AMOUNT = decimal.Decimal(random.uniform(500.00, 1000.00)).quantize(
     decimal.Decimal('.01'))  # right now rent is in fictional currencies
 MARKET_TIMES = {
@@ -51,12 +50,7 @@ class Command(BaseCommand):
     help = 'makes a game'
 
     def handle(self, *args, **options):
-        try:
-            make_game()
-
-        except Exception as ex:
-            print "There was an error at the command level: {0}".format(ex)
-            sys.exit()
+        make_game()
 
         self.success = True
 
@@ -78,7 +72,6 @@ def make_game():
 
     donor = game.donor
     crisis = game.crisis
-    Scheme.objects.all().delete()
     scheme = create_scheme_instance(donor=donor, crisis=crisis)
 
     print "Created donor, crisis, scheme, game."
@@ -121,7 +114,7 @@ def make_game():
     print "Created households with adults, minors, seniors."
     # Create vendors in the zone, for now only one of each type
 
-    for vendor_category in TRANSACTION_CATEGORY_CHOICES:
+    for vendor_category in [choice[0] for choice in PRODUCT_CATEGORY_CHOICES]:
 
         # Find a point within the crisis zone for the vendor,
         # assign it to a variable and use that in a kwarg
@@ -214,8 +207,6 @@ def make_game():
 
         for day in days_in_turn:
 
-            print "Now working on date {0}".format(day.date())
-
             earliest_time = datetime.combine(day.date(), MARKET_TIMES['open']).replace(tzinfo=pytz.utc)
             latest_time = datetime.combine(day.date(), MARKET_TIMES['close']).replace(tzinfo=pytz.utc)
 
@@ -243,11 +234,25 @@ def make_game():
                             category='RENT',
                             turn=turn
                         )
-                        print "{0} paid {1} in rent to {2}".format(spender.name, RENT_AMOUNT, landlord.name)
 
-                    # for category in TRANSACTION_CATEGORY_CHOICES:
-                    #     number_of_transactions = random.randint(0, 6)
-                    #
-                    #     print "There will be {0} transactions in category {1}".format(number_of_transactions, category
-                    #                                                                   )
+                    for category in TRANSACTION_CATEGORY_CHOICES:
 
+                        number_of_transactions = random.randint(0, 5)
+                        vendor = Vendor.objects.filter(category=category)[0]
+
+                        for transaction in range(number_of_transactions):
+
+                            transaction_time = radar.random_datetime(start=earliest_time, stop=latest_time).replace(
+                                tzinfo=pytz.utc)
+
+                            amount = decimal.Decimal(random.uniform(10.00, 600.00)).quantize(
+                                decimal.Decimal('.01'))
+
+                            create_transaction_instance(
+                                buyer=spender,
+                                seller=vendor,
+                                amount=amount,
+                                date=transaction_time,
+                                category=category,
+                                turn=turn
+                            )

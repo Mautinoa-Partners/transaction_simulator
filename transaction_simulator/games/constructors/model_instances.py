@@ -70,7 +70,7 @@ def create_game_instance(**kwargs):
         kwargs.update({'name': fake.company()})
 
     if 'number_of_turns' not in kwargs:
-        kwargs.update({'number_of_turns': random.randint(1, 20)})
+        kwargs.update({'number_of_turns': random.randint(5, 20)})
 
     if 'crisis' not in kwargs:
         kwargs.update({'crisis': Crisis.objects.order_by('?').first() or create_crisis_instance()})
@@ -479,7 +479,8 @@ def create_vendor_instance(**kwargs):
         return new_vendor_instance
 
     except Exception as ex:
-        sys.exit("There's a problem creating your Vendor: {0}").format(ex)
+        print "There's a problem creating your Vendor: {0}".format(ex)
+        import ipdb; ipdb.set_trace()
 
 
 def create_transaction_instance(**kwargs):
