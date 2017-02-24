@@ -93,9 +93,9 @@ WSGI_APPLICATION = 'transaction_simulator.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'agtech',                      # Or path to database file if using sqlite3.
-        'USER': 'agtech',                      # Not used with sqlite3.
-        'PASSWORD': 'tasty',              # Not used with sqlite3.
+        'NAME': 'transaction_simulator',                      # Or path to database file if using sqlite3.
+        'USER': 'transaction_simulator',                      # Not used with sqlite3.
+        'PASSWORD': 'd5cda65eaa622604f9af738dad50339f',              # Not used with sqlite3.
         'HOST': 'localhost',                       # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '5432',                            # Set to empty string for default. Not used with sqlite3.
     }

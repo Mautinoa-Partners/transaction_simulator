@@ -1,3 +1,4 @@
 cd {{ django_dir }}
 source {{ venv_path }}/bin/activate
 alias kickweb='sudo systemctl restart nginx.service gunicorn.service'
+alias fixpython='deactivate; rm -rf {{ venv_path }}; virtualenv --system-site-packages {{ venv_path }} ; source {{ venv_path }}/bin/activate ; pip install -r /vagrant/resources/python_requirements.txt'
