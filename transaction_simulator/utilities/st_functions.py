@@ -2,6 +2,8 @@ from boundaries import *
 import pytz
 from datetime import datetime
 import random
+from django.contrib.gis.geos import Point, GEOSGeometry
+
 
 def get_timezone_by_country_name(country):
 
@@ -17,6 +19,25 @@ def get_timezone_by_country_name(country):
     timezones = pytz.country_timezones[two_letters]
 
     return pytz.timezone(timezones[0]) if timezones else pytz.utc
+
+def generate_random_points(bounding_box):
+    yield Point(
+        x=random.uniform(bounding_box[0], bounding_box[2]),
+        y=random.uniform(bounding_box[1], bounding_box[2])
+    )
+
+
+def which_polygon_contains_coordinates(Boundary_Model, coordinates):
+
+    try:
+        container = Boundary_Model.objects.filter(geom__intersects=coordinates)
+        return container[0]
+
+    except Exception:
+        return None
+
+
+
 
 
 

@@ -4,6 +4,11 @@ from __future__ import unicode_literals
 
 from django.contrib.gis.db import models
 
+# Python standard library tools
+
+from itertools import chain
+from operator import attrgetter
+
 # Other app models
 
 """
@@ -26,11 +31,11 @@ PRODUCT_CATEGORY_CHOICES = (
     ('UTILITIES', 'Utilities')
 )
 
-MINOR_AGE_RANGE = range(0,18)
+MINOR_AGE_RANGE = range(0, 18)
 
-ADULT_AGE_RANGE = range(18,56)
+ADULT_AGE_RANGE = range(18, 56)
 
-SENIOR_AGE_RANGE = range(56,101)
+SENIOR_AGE_RANGE = range(56, 101)
 
 # http://stackoverflow.com/questions/6301741/django-integerfield-with-choice-options-how-to-create-0-10-integer-options
 AGE_RANGE = [(i, i) for i in range(1, 100)]
@@ -39,12 +44,11 @@ AGE_RANGE = [(i, i) for i in range(1, 100)]
 # These are managers and other such utilities for the models
 
 class MinorManager(models.Manager):
-
     def get_queryset(self):
 
-        return super(MinorManager, self)\
+        return super(MinorManager, self) \
             .get_queryset() \
-            .filter(age__range=(MINOR_AGE_RANGE[0],MINOR_AGE_RANGE[-1]))
+            .filter(age__range=(MINOR_AGE_RANGE[0], MINOR_AGE_RANGE[-1]))
 
     def create(self):
         if not kwargs['age'] in MINOR_AGE_RANGE or 'age' not in kwargs:
@@ -57,11 +61,10 @@ class MinorManager(models.Manager):
 
 
 class AdultManager(models.Manager):
-
     def get_queryset(self):
 
-        return super(AdultManager, self)\
-            .get_queryset()\
+        return super(AdultManager, self) \
+            .get_queryset() \
             .filter(age__range=(ADULT_AGE_RANGE[0], ADULT_AGE_RANGE[-1]))
 
     def create(self):
@@ -71,15 +74,14 @@ class AdultManager(models.Manager):
             return super(AdultManager, self).create(**kwargs)
 
         else:
-            return super(AdultManager,self).create(**kwargs)
+            return super(AdultManager, self).create(**kwargs)
 
 
 class SeniorManager(models.Manager):
-
     def get_queryset(self):
 
-        return super(SeniorManager, self)\
-            .get_queryset()\
+        return super(SeniorManager, self) \
+            .get_queryset() \
             .filter(age__range=(SENIOR_AGE_RANGE[0], SENIOR_AGE_RANGE[-1]))
 
     def create(self):
@@ -137,7 +139,7 @@ class Crisis(models.Model):
 
     # Returns the string representation of the model.
     def __unicode__(self):  # __unicode__ on Python 2
-        return self.name
+        return unicode(self.name)
 
 
 class Donor(models.Model):
@@ -202,8 +204,9 @@ class Scheme(models.Model):
 
 
 class Transaction(models.Model):
+
     category = models.CharField(
-        max_length=1,
+        max_length=20,
         choices=PRODUCT_CATEGORY_CHOICES,
         default='FOOD',
     )
@@ -221,7 +224,7 @@ class Transaction(models.Model):
     )
 
     seller = models.ForeignKey(
-        "games.Person",
+        "games.Vendor",
         related_name="seller",
         null=True
     )
@@ -259,7 +262,8 @@ class Person(models.Model):
     household = models.ForeignKey(
         'games.Household',
         null=True,
-        blank=True
+        blank=True,
+        related_name='members'
     )
 
     balance = models.DecimalField(
@@ -348,8 +352,14 @@ class Vendor(models.Model):
         blank=True
     )
 
+    balance = models.DecimalField(
+        decimal_places=2,
+        max_digits=20,
+        default=0.0
+    )
+
     category = models.CharField(
-        max_length=1,
+        max_length=200,
         choices=PRODUCT_CATEGORY_CHOICES,
         default='FOOD',
     )
@@ -408,6 +418,13 @@ class Household(models.Model):
         blank=True
     )
 
+    scheme = models.ForeignKey(
+        'games.Scheme',
+        blank=True,
+        null=True,
+        related_name='clients'
+    )
+
     coordinates = models.PointField(
         srid=4326,
         null=True,
@@ -449,6 +466,34 @@ class Household(models.Model):
         blank=True,
         null=True
     )
+
+    ### Custom methods to return subsets of related fields
+
+    def get_adult_members(self):
+        return Adult.objects.filter(household=self)
+
+    def get_senior_members(self):
+        return Senior.objects.filter(household=self)
+
+    def get_minor_members(self):
+        return Minor.objects.filter(household=self)
+
+    def get_non_workers(self):
+
+        non_workers = sorted(
+            chain(Senior.objects.filter(household=self), Minor.objects.filter(household=self)),
+            key=attrgetter('age'))
+
+        return non_workers
+
+    def get_spenders(self):
+
+        spenders = sorted(
+            chain(Adult.objects.filter(household=self), Senior.objects.filter(household=self)),
+            key=attrgetter('age')
+        )
+
+        return spenders
 
     def __unicode__(self):  # __unicode__ on Python 2
         return u'{0}'.format(self.name)
@@ -506,6 +551,16 @@ class Turn(models.Model):
         blank=True
     )
 
+    start_date = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    end_date = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
     def __unicode__(self):  # __unicode__ on Python 2
 
-        return u'{0}'.format(pk)
+        return u'{0}'.format(self.number)

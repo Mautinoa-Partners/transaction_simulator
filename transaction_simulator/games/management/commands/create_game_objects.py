@@ -68,6 +68,9 @@ class Command(BaseCommand):
             'crisis': create_crisis,
             'scheme': create_scheme,
             'person': create_person,
+            'senior': create_senior,
+            'minor' : create_minor,
+            'adult' : create_adult,
             'game' : create_game,
             'turn' : create_turn
         }
@@ -244,7 +247,6 @@ def create_minor(**kwargs):
     except Exception as ex:
 
         print "The error was : %s " % (ex)
-        import pdb; pdb.set_trace()
 
 def create_senior(**kwargs):
 
@@ -300,12 +302,12 @@ def create_adult(**kwargs):
         print "The error was : %s " % (ex)
         import pdb; pdb.set_trace()
 
-def create_adult(**kwargs):
+def create_person(**kwargs):
 
     fake = Factory.create()
 
     if 'name' not in kwargs:
-        kwargs.update({'name': fake.name()})
+        kwargs.update({'name': fake.person.last_name()})
 
     if 'scheme' not in kwargs:
         kwargs.update({'scheme':  Scheme.objects.order_by('?').first()})
@@ -317,7 +319,7 @@ def create_adult(**kwargs):
         kwargs.update({'age' : random.choice(ADULT_AGE_RANGE)})
 
     try:
-        p = Senior(**kwargs)
+        p = Person(**kwargs)
 
         p.save()
         print "Successfully created a person named : %s " % (kwargs['name'])
@@ -325,7 +327,18 @@ def create_adult(**kwargs):
     except Exception as ex:
 
         print "The error was : %s " % (ex)
-        import pdb; pdb.set_trace()
+
+def create_household(**kwargs):
+
+    # Set population parameters: how many of each type
+
+    number_of_adults = random.randint(1, 2)     # Assuming married couples or singles
+    number_of_offspring = random.randint(1, 5)  # Assuming no more than 5 kids
+    number_of_seniors = random.randint(1, 4)    # Assuming no more than 2 parents per adult
+
+    # Set geography parameters: which boundaries and which coordinates
+
+    print "Household"
 
 def create_game():
     fake = Factory.create()
@@ -355,7 +368,6 @@ def create_game():
     except Exception as ex:
 
         print "The error was : %s " % ex
-
 
 def create_turn():
 
@@ -423,23 +435,9 @@ def get_object_by_name_or_id(test_model, name, search_type='iexact'):
 
                     print "{0} was the exception".format(ex)
 
-
-# def generate_household(**kwargs):
-
-
-
-
 def generate_random_points(bounding_box):
     yield Point(
         x=random.uniform(bounding_box[0], bounding_box[2]),
         y=random.uniform(bounding_box[1], bounding_box[2])
     )
 
-def get_random_object(model):
-    primo = model.objects.first()
-    ultimo = model.objects.last()
-    try:
-        the_object = model.objects.get(pk=random.randint(primo.id, ultimo.id))
-        return the_object
-    except Exception as ex:
-        get_random_object(model)

@@ -4,6 +4,7 @@ psycopg2
 gunicorn
 django-extensions
 pandas==0.18.1
+django-pandas==0.4.1
 ipython
 django-model-utils
 Faker
