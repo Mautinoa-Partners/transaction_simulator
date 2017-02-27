@@ -10,3 +10,7 @@
  {% for tag in blog_post.tags.all %}
     {{ tag }}
 {% endfor %}
+
+--
+
+Transaction.objects.all().values_list('id', 'category', 'amunt', 'date', 'person__name', 'vendor_name')

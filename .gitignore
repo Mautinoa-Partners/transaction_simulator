@@ -138,3 +138,4 @@ ENV/
 /transaction_simulator/transaction_simulator/scratch.txt
 /sample_game.csv.zip
 /sample_game.csv
+.git.bfg-report/

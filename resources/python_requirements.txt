@@ -16,3 +16,6 @@ django-filter
 radar
 ptpython
 pygraphviz
+django-money
+django-grappelli
+
